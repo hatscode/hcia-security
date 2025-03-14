@@ -34,6 +34,13 @@
 <details>
 <summary>Show Answer</summary>
 **Correct answer:** D. 172.20.2.1
+    
+***
+Private IP ranges (not routable on the public internet):
+- Class A: 10.0.0.0 to 10.255.255.255
+- Class B: 172.16.0.0 to 172.31.255.255
+- Class C: 192.168.0.0 to 192.168.255.255
+***
 </details>
 
 4. Which of the following statements is correct about the characteristics of a DDoS attack?
