@@ -101,6 +101,9 @@ Private IP ranges (not routable on the public internet):
 <details>
 <summary>Show Answer</summary>
 **Correct answer:** D. Port scanning
+
+***Explanation:***
+Port scanning is not a network-layer attack. It operates at the transport layer (Layer 4) of the OSI model. Port scanning involves probing a system to identify open ports and services running on those ports. It is often used for reconnaissance before launching an attack.
 </details>
 
 9. Which of the following statements is correct about a firewall's interzone security policies?
