@@ -6,8 +6,8 @@
 
 ## Which Exam Do You Want to Review?
 
-- **a)** [Huawei Security](https://github.com/stilla1ex/huaweisecuriy)  
-- **b)** [Huawei Data Communication](https://github.com/stilla1ex/huaweidatacomp)
+-  [Huawei Security](https://github.com/stilla1ex/huaweisecuriy)  
+-  [Huawei Data Communication](https://github.com/stilla1ex/huaweidatacomp)
 
 
 
