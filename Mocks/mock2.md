@@ -616,7 +616,7 @@ Port scanning is not a network-layer attack. It operates at the transport layer 
 
 <details>
 <summary>Show Answer</summary>
-**Correct answer:** True
+**Correct answer:** False
 </details>
 
 55. A USG firewall is usually deployed between the external network and the network to be protected. It generates threat logs when detecting viruses, intrusions, botnets, Trojan horses, or worms.  
@@ -673,4 +673,16 @@ Port scanning is not a network-layer attack. It operates at the transport layer 
 **Correct answer:** True
 </details>
 
+61. Which of the following statements is correct about the function of lateral movement in network penetration?
 
+A. An attacker obtains the IP address, domain name, active port, and communication information of the target network through scanning and network monitoring to lay a foundation for subsequent attacks.  
+B. After accessing the target system, the attacker cannot perform lateral movement due to a lack of privileges. Therefore, the attacker may try to elevate privileges.  
+C. Lateral movement is to penetrate other devices that may have vulnerabilities on the network through controlled hosts or servers.  
+D. Communicate with the customer to understand the target of the penetration test, such as the system, server, and IP address.  
+
+<details>
+<summary>Show Answer</summary>
+
+**Correct answer:** C. Lateral movement is to penetrate other devices that may have vulnerabilities on the network through controlled hosts or servers.  
+
+</details>
