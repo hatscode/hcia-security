@@ -6,7 +6,7 @@
 
 ## Which Exam Do You Want to Review?
 
--  [Huawei Security](https://github.com/stilla1ex/huaweisecuriy)  
+-  [Huawei Security](https://github.com/stilla1ex/hcia-certified/tree/main/Mocks)
 -  [Huawei Data Communication](https://github.com/stilla1ex/huaweidatacomp)
 
 
