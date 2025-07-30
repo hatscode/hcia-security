@@ -2,7 +2,15 @@
 
 1. In Cybersecurity Classified Protection 2.0, a network operator can determine the final level of security protection on its own when the security protection level is preliminarily determined to be ____.
 
+    A. Level 1  
+    B. Level 2  
+    C. Level 3  
+    D. Level 4  
 
+<details>
+<summary>Show Answer</summary>
+**Correct answer:** A
+</details>
 
 2. ISO 27002 can be used to certify an enterprise's information security system.  
 **True**  
