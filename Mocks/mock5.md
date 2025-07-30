@@ -184,7 +184,7 @@ This guide contains all the quizzes from the HCIA-Security V4.0 training materia
 
 ---
 
-### 13. (True or False) SNM3 is a commercial algorithm compiled by the National Cryptography administration. It is used for digital signature and authentication generation and authentication, and random number generation in cryptography applications. It can meet the security requirements of applications.
+### 13. (True or False) SM3 is a commercial algorithm compiled by the National Cryptography administration. It is used for digital signature and authentication generation and authentication, and random number generation in cryptography applications. It can meet the security requirements of applications.
 
   A. True  
   B. False  
@@ -194,7 +194,7 @@ This guide contains all the quizzes from the HCIA-Security V4.0 training materia
   **Answer:** A. True
     
   **Answer Analysis:**
-    - SM3 (not SNM3) is a cryptographic hash algorithm developed by the Chinese National Cryptography Administration for digital signatures, authentication, and random number generation in secure applications.
+    - SM3 is a cryptographic hash algorithm developed by the Chinese National Cryptography Administration for digital signatures, authentication, and random number generation in secure applications.
   </details>
 
 ---
@@ -330,10 +330,10 @@ This guide contains all the quizzes from the HCIA-Security V4.0 training materia
   
   <details>
   <summary>Show Answer</summary>
-  **Answer:** A, B, C, D (All statements are correct)
+  **Answer:** B, C, D
     
   **Answer Analysis:**
-    - All statements accurately describe PKI system structure: PKI consists of end entities, CAs, and registration authorities; entities can be individuals, organizations, or devices; CAs issue and manage certificates; and CAs are organized in hierarchical structures with root and subordinate CAs.
+    - A PKI entity can be an individual, organization, or device (B is correct); CAs are trusted entities that issue and manage certificates (C is correct); CAs are organized hierarchically with root and subordinate CAs (D is correct). However, a complete PKI system typically has four main components: end entity, certificate authority, registration authority, and certificate/CRL storage (A is incomplete).
   </details>
 
 ---
