@@ -13,8 +13,6 @@ Welcome to the **Huawei Certification Exam Mocks** repository! Here you'll find 
 - [Chapter 4](https://github.com/stilla1ex/hcia-certified/blob/main/Mocks/mock4.md)
 - [Chapter 5](https://github.com/stilla1ex/hcia-certified/blob/main/Mocks/mock5.md)
 - [Chapter 6](https://github.com/stilla1ex/hcia-certified/blob/main/Mocks/mock6.md)
-- [Chapter 1](https://github.com/stilla1ex/hcia-certified/blob/main/Mocks/mock1.md)
-
 
 ## How to Use
 
