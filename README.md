@@ -4,7 +4,7 @@
 
 --- 
 
-Welcome to the **Huawei Certification Exam Mocks** repository! Here you'll find practice exams to help you prepare for Huawei security certification tracks.
+Welcome to the **Huawei Certification Exam Mocks** repository! Here you'll find practice exams to help you prepare for Huawei security certification.
 
 ## Available Mock Exams
 - [Chapter 1](https://github.com/stilla1ex/hcia-certified/blob/main/Mocks/mock1.md)
