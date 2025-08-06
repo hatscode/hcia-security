@@ -24,8 +24,4 @@ Welcome to the **Huawei Certification Exam Mocks** repository! Here you'll find 
 
 Contributions are welcome! If you have new questions or corrections, please open an issue or submit a pull request.
 
----
-
-**Disclaimer:** These mock exams are for practice purposes only.
-
 
