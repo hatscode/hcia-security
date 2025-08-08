@@ -15,11 +15,6 @@
                 <div class="logo">
                     <h1>Huawei Security Mock Exam</h1>
                 </div>
-                <div class="header-controls">
-                    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
-                        <span class="toggle-icon">🌙</span>
-                    </button>
-                </div>
             </header>
             
             <main class="main-content">
@@ -156,25 +151,6 @@
         </div>
     </div>
 
-    <!-- Stop Exam Modal -->
-    <div id="stop-exam-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-container">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Stop Exam</h3>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to stop the exam?</p>
-                    <p class="modal-warning">You will get results based on the questions you have answered so far.</p>
-                </div>
-                <div class="modal-actions">
-                    <button id="continue-exam-btn" class="btn btn-primary">Continue Exam</button>
-                    <button id="exit-exam-btn" class="btn btn-danger">Exit Exam</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Feedback Modal -->
     <div id="feedback-modal" class="feedback-modal" style="display: none;">
         <div class="feedback-modal-content">
@@ -253,7 +229,7 @@
                     <h4>Support</h4>
                     <div class="footer-links">
                         <button id="footer-feedback-btn" class="footer-link-btn">Give Feedback</button>
-                        <a href="#" onclick="window.location.reload()" class="footer-link">Report Issue</a>
+                        <a href="#" id="report-issue-link" class="footer-link">Report Issue</a>
                     </div>
                 </div>
             </div>
@@ -263,6 +239,24 @@
             </div>
         </div>
     </footer>
+
+    <!-- Stop Exam Modal -->
+    <div id="stop-exam-modal" class="stop-modal" style="display: none;">
+        <div class="stop-modal-backdrop"></div>
+        <div class="stop-modal-content">
+            <div class="stop-modal-header">
+                <h3>Stop Exam</h3>
+            </div>
+            <div class="stop-modal-body">
+                <p>Are you sure you want to stop the exam?</p>
+                <p class="stop-modal-warning">You will get results based on the questions you have answered so far.</p>
+            </div>
+            <div class="stop-modal-actions">
+                <button id="continue-exam-btn" class="btn btn-secondary">Continue</button>
+                <button id="exit-exam-btn" class="btn btn-danger">Exit</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen" style="display: none;">

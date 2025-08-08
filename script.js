@@ -223,6 +223,21 @@ class ExamApp {
         const stopExamBtn = document.getElementById('stop-exam-btn');
         stopExamBtn?.addEventListener('click', () => this.stopExam());
 
+        // Stop exam modal buttons
+        const continueExamBtn = document.getElementById('continue-exam-btn');
+        continueExamBtn?.addEventListener('click', () => this.hideStopExamModal());
+        
+        const exitExamBtn = document.getElementById('exit-exam-btn');
+        exitExamBtn?.addEventListener('click', () => this.confirmExamExit());
+
+        // Close modal when clicking backdrop
+        const stopModal = document.getElementById('stop-exam-modal');
+        stopModal?.addEventListener('click', (e) => {
+            if (e.target === stopModal || e.target.classList.contains('stop-modal-backdrop')) {
+                this.hideStopExamModal();
+            }
+        });
+
         // Results page - View answers button
         const viewAnswersBtn = document.getElementById('view-answers-btn');
         viewAnswersBtn?.addEventListener('click', () => this.toggleDetailedAnswers());
@@ -237,6 +252,13 @@ class ExamApp {
         
         const footerFeedbackBtn = document.getElementById('footer-feedback-btn');
         footerFeedbackBtn?.addEventListener('click', () => this.showFeedbackModal());
+
+        // Report Issue button
+        const reportIssueLink = document.getElementById('report-issue-link');
+        reportIssueLink?.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.reportIssue();
+        });
 
         const closeFeedbackBtn = document.getElementById('close-feedback-btn');
         closeFeedbackBtn?.addEventListener('click', () => this.hideFeedbackModal());
@@ -308,6 +330,15 @@ class ExamApp {
      * Handle keyboard navigation for accessibility
      */
     handleKeyboardNavigation(event) {
+        // ESC key to close stop exam modal
+        if (event.key === 'Escape') {
+            const stopModal = document.getElementById('stop-exam-modal');
+            if (stopModal && stopModal.style.display === 'flex') {
+                this.hideStopExamModal();
+                return;
+            }
+        }
+        
         const currentPage = document.querySelector('.page.active');
         
         if (currentPage && currentPage.id === 'question-page') {
@@ -761,32 +792,67 @@ class ExamApp {
      * Stop the exam early and show results for answered questions
      */
     stopExam() {
+        console.log('Showing stop exam modal...');
+        
+        // Show the stop exam modal instead of confirm dialog
+        this.showStopExamModal();
+    }
+
+    /**
+     * Show the stop exam modal
+     */
+    showStopExamModal() {
+        const modal = document.getElementById('stop-exam-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Add show class with slight delay for smooth animation
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+    }
+
+    /**
+     * Hide the stop exam modal
+     */
+    hideStopExamModal() {
+        const modal = document.getElementById('stop-exam-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+    }
+
+    /**
+     * Handle exam exit confirmation
+     */
+    confirmExamExit() {
         console.log('Stopping exam early...');
         
-        // Confirm with user
-        const confirmed = confirm('Are you sure you want to stop the exam? You will get results based on the questions you have answered so far.');
+        // Hide the modal first
+        this.hideStopExamModal();
         
-        if (confirmed) {
-            // Set exam no longer in progress
-            this.examInProgress = false;
+        // Set exam no longer in progress
+        this.examInProgress = false;
+        
+        // Stop the timer
+        this.stopTimer();
+        this.examEndTime = new Date();
+        
+        // Show loading screen
+        this.showLoadingScreen();
+        
+        setTimeout(() => {
+            // Calculate and display results
+            this.calculateResults();
+            this.showPage('results-page');
+            this.hideLoadingScreen();
             
-            // Stop the timer
-            this.stopTimer();
-            this.examEndTime = new Date();
-            
-            // Show loading screen
-            this.showLoadingScreen();
-            
-            setTimeout(() => {
-                // Calculate and display results
-                this.calculateResults();
-                this.showPage('results-page');
-                this.hideLoadingScreen();
-                
-                // Scroll to top of results
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 1000);
-        }
+            // Scroll to top of results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 1000);
     }
 
     /**
@@ -1241,6 +1307,86 @@ class ExamApp {
                 </div>
             `;
         }
+    }
+
+    /**
+     * Handle report issue functionality
+     */
+    reportIssue() {
+        // Get current page context
+        const currentPage = document.querySelector('.page.active');
+        let context = 'Unknown';
+        
+        if (currentPage) {
+            switch (currentPage.id) {
+                case 'home-page':
+                    context = 'Home Page';
+                    break;
+                case 'question-page':
+                    context = `Question Page - Question ${this.currentQuestionIndex + 1}`;
+                    break;
+                case 'results-page':
+                    context = 'Results Page';
+                    break;
+            }
+        }
+
+        // Get browser and device information
+        const userAgent = navigator.userAgent;
+        const timestamp = new Date().toISOString();
+        const url = window.location.href;
+
+        // Create email subject and body
+        const subject = encodeURIComponent('HCIA Security Mock Exam - Issue Report');
+        const body = encodeURIComponent(`
+Hi,
+
+I'm reporting an issue with the HCIA Security Mock Exam application.
+
+Issue Details:
+- Page: ${context}
+- Timestamp: ${timestamp}
+- URL: ${url}
+- Browser: ${userAgent}
+
+Issue Description:
+[Please describe the issue you encountered]
+
+Steps to Reproduce:
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+Expected Behavior:
+[What you expected to happen]
+
+Actual Behavior:
+[What actually happened]
+
+Additional Information:
+[Any additional context or screenshots]
+
+Best regards,
+[Your name]
+        `);
+
+        // Create mailto link
+        const mailtoLink = `mailto:stilla1ex@gmail.com?subject=${subject}&body=${body}`;
+        
+        // Try to open email client
+        try {
+            window.location.href = mailtoLink;
+        } catch (error) {
+            // Fallback: copy email to clipboard and show instructions
+            this.showEmailFallback();
+        }
+    }
+
+    /**
+     * Show email fallback if mailto doesn't work
+     */
+    showEmailFallback() {
+        alert(`Please send your issue report to: stilla1ex@gmail.com\n\nInclude details about:\n- What page you were on\n- What you were trying to do\n- What went wrong\n- Your browser and device info`);
     }
 }
 
