@@ -62,7 +62,10 @@ class ExamApp {
         this.disableTextSelection();
         this.showPage('home-page');
         
-        console.log('Application initialized successfully');
+                // Setup mobile optimizations
+        this.setupMobileOptimizations();
+        
+        console.log('✅ Huawei Mock Exam Application initialized successfully!');
     }
 
     /**
@@ -257,7 +260,25 @@ class ExamApp {
         const reportIssueLink = document.getElementById('report-issue-link');
         reportIssueLink?.addEventListener('click', (e) => {
             e.preventDefault();
-            this.reportIssue();
+            this.showIssueReportModal();
+        });
+
+        // Issue report modal buttons
+        const closeIssueBtn = document.getElementById('close-issue-btn');
+        closeIssueBtn?.addEventListener('click', () => this.hideIssueReportModal());
+        
+        const cancelIssueBtn = document.getElementById('cancel-issue-btn');
+        cancelIssueBtn?.addEventListener('click', () => this.hideIssueReportModal());
+        
+        const submitIssueBtn = document.getElementById('submit-issue-btn');
+        submitIssueBtn?.addEventListener('click', () => this.submitIssueReport());
+
+        // Close issue modal when clicking backdrop
+        const issueModal = document.getElementById('issue-report-modal');
+        issueModal?.addEventListener('click', (e) => {
+            if (e.target === issueModal || e.target.classList.contains('issue-modal-backdrop')) {
+                this.hideIssueReportModal();
+            }
         });
 
         const closeFeedbackBtn = document.getElementById('close-feedback-btn');
@@ -330,11 +351,18 @@ class ExamApp {
      * Handle keyboard navigation for accessibility
      */
     handleKeyboardNavigation(event) {
-        // ESC key to close stop exam modal
+        // ESC key to close modals
         if (event.key === 'Escape') {
             const stopModal = document.getElementById('stop-exam-modal');
+            const issueModal = document.getElementById('issue-report-modal');
+            
             if (stopModal && stopModal.style.display === 'flex') {
                 this.hideStopExamModal();
+                return;
+            }
+            
+            if (issueModal && issueModal.style.display === 'flex') {
+                this.hideIssueReportModal();
                 return;
             }
         }
@@ -1310,9 +1338,40 @@ class ExamApp {
     }
 
     /**
-     * Handle report issue functionality
+     * Show the issue report modal
      */
-    reportIssue() {
+    showIssueReportModal() {
+        // Populate context information
+        this.updateIssueContext();
+        
+        const modal = document.getElementById('issue-report-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Add show class with slight delay for smooth animation
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+    }
+
+    /**
+     * Hide the issue report modal
+     */
+    hideIssueReportModal() {
+        const modal = document.getElementById('issue-report-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                this.resetIssueForm();
+            }, 300);
+        }
+    }
+
+    /**
+     * Update context information in the issue form
+     */
+    updateIssueContext() {
         // Get current page context
         const currentPage = document.querySelector('.page.active');
         let context = 'Unknown';
@@ -1331,62 +1390,246 @@ class ExamApp {
             }
         }
 
-        // Get browser and device information
-        const userAgent = navigator.userAgent;
-        const timestamp = new Date().toISOString();
-        const url = window.location.href;
+        // Update context display
+        const contextPage = document.getElementById('context-page');
+        const contextBrowser = document.getElementById('context-browser');
+        const contextTimestamp = document.getElementById('context-timestamp');
 
-        // Create email subject and body
-        const subject = encodeURIComponent('HCIA Security Mock Exam - Issue Report');
+        if (contextPage) contextPage.textContent = context;
+        if (contextBrowser) contextBrowser.textContent = this.getBrowserInfo();
+        if (contextTimestamp) contextTimestamp.textContent = new Date().toLocaleString();
+    }
+
+    /**
+     * Get simplified browser information
+     */
+    getBrowserInfo() {
+        const ua = navigator.userAgent;
+        if (ua.includes('Chrome')) return 'Chrome';
+        if (ua.includes('Firefox')) return 'Firefox';
+        if (ua.includes('Safari')) return 'Safari';
+        if (ua.includes('Edge')) return 'Edge';
+        return 'Unknown';
+    }
+
+    /**
+     * Reset the issue report form
+     */
+    resetIssueForm() {
+        const form = document.querySelector('.issue-form');
+        if (form) {
+            // Reset select elements
+            document.getElementById('issue-type').value = 'bug';
+            document.getElementById('issue-severity').value = 'low';
+            
+            // Reset input fields
+            document.getElementById('issue-title').value = '';
+            document.getElementById('issue-description').value = '';
+            document.getElementById('issue-expected').value = '';
+            document.getElementById('issue-contact').value = '';
+        }
+    }
+
+    /**
+     * Submit the issue report
+     */
+    submitIssueReport() {
+        // Get form data
+        const issueType = document.getElementById('issue-type').value;
+        const severity = document.getElementById('issue-severity').value;
+        const title = document.getElementById('issue-title').value.trim();
+        const description = document.getElementById('issue-description').value.trim();
+        const expected = document.getElementById('issue-expected').value.trim();
+        const contact = document.getElementById('issue-contact').value.trim();
+
+        // Validation
+        if (!title) {
+            alert('Please provide an issue title.');
+            document.getElementById('issue-title').focus();
+            return;
+        }
+
+        if (!description) {
+            alert('Please provide a detailed description of the issue.');
+            document.getElementById('issue-description').focus();
+            return;
+        }
+
+        // Get context information
+        const contextPage = document.getElementById('context-page').textContent;
+        const contextBrowser = document.getElementById('context-browser').textContent;
+        const contextTimestamp = document.getElementById('context-timestamp').textContent;
+
+        // Create email content
+        const subject = encodeURIComponent(`[${severity.toUpperCase()}] ${issueType.toUpperCase()}: ${title}`);
         const body = encodeURIComponent(`
-Hi,
+HCIA Security Mock Exam - Issue Report
 
-I'm reporting an issue with the HCIA Security Mock Exam application.
+Issue Type: ${issueType.charAt(0).toUpperCase() + issueType.slice(1)}
+Severity: ${severity.charAt(0).toUpperCase() + severity.slice(1)}
+Title: ${title}
 
-Issue Details:
-- Page: ${context}
-- Timestamp: ${timestamp}
-- URL: ${url}
-- Browser: ${userAgent}
+DESCRIPTION:
+${description}
 
-Issue Description:
-[Please describe the issue you encountered]
+EXPECTED BEHAVIOR:
+${expected || 'Not specified'}
 
-Steps to Reproduce:
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+SYSTEM INFORMATION:
+- Page: ${contextPage}
+- Browser: ${contextBrowser}
+- Timestamp: ${contextTimestamp}
+- URL: ${window.location.href}
+- User Agent: ${navigator.userAgent}
 
-Expected Behavior:
-[What you expected to happen]
+CONTACT INFORMATION:
+${contact || 'Not provided'}
 
-Actual Behavior:
-[What actually happened]
-
-Additional Information:
-[Any additional context or screenshots]
-
-Best regards,
-[Your name]
+---
+This issue was reported via the HCIA Security Mock Exam application.
         `);
 
         // Create mailto link
         const mailtoLink = `mailto:stilla1ex@gmail.com?subject=${subject}&body=${body}`;
         
-        // Try to open email client
+        // Open email client
         try {
             window.location.href = mailtoLink;
+            this.showIssueSubmissionSuccess();
         } catch (error) {
-            // Fallback: copy email to clipboard and show instructions
             this.showEmailFallback();
         }
+    }
+
+    /**
+     * Show success message after issue submission
+     */
+    showIssueSubmissionSuccess() {
+        // Hide the modal
+        this.hideIssueReportModal();
+        
+        // Show success message
+        setTimeout(() => {
+            alert('Thank you for your report! Your email client should have opened with the issue details. Please send the email to complete your report.');
+        }, 300);
+    }
+
+    /**
+     * Handle report issue functionality (legacy method)
+     */
+    reportIssue() {
+        this.showIssueReportModal();
+    }
+
+    /**
+     * Setup mobile-specific optimizations
+     */
+    setupMobileOptimizations() {
+        // Prevent zoom on input focus for iOS
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (!input.style.fontSize) {
+                    input.style.fontSize = '16px';
+                }
+            });
+        }
+        
+        // Add touch event handling for better mobile experience
+        this.setupTouchEvents();
+        
+        // Setup viewport height fix for mobile browsers
+        this.setupViewportFix();
+        
+        // Setup orientation change handling
+        this.setupOrientationChange();
+        
+        // Prevent double-tap zoom on buttons
+        this.preventDoubleTabZoom();
+    }
+
+    /**
+     * Setup touch events for better mobile interaction
+     */
+    setupTouchEvents() {
+        // Add touch feedback to buttons
+        const interactiveElements = document.querySelectorAll('.btn, .mock-btn, .answer-option, .social-link');
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.opacity = '0.8';
+            }, { passive: true });
+            
+            element.addEventListener('touchend', function() {
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.opacity = '';
+                }, 100);
+            }, { passive: true });
+            
+            element.addEventListener('touchcancel', function() {
+                this.style.transform = '';
+                this.style.opacity = '';
+            }, { passive: true });
+        });
+    }
+
+    /**
+     * Fix viewport height issues on mobile browsers
+     */
+    setupViewportFix() {
+        const setVH = () => {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        
+        setVH();
+        window.addEventListener('resize', setVH);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(setVH, 100);
+        });
+    }
+
+    /**
+     * Handle orientation changes
+     */
+    setupOrientationChange() {
+        window.addEventListener('orientationchange', () => {
+            // Force reflow to handle orientation change
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                
+                // Adjust question container height in landscape
+                const questionContainer = document.querySelector('.question-container');
+                if (questionContainer && window.innerHeight < window.innerWidth) {
+                    questionContainer.style.maxHeight = `${window.innerHeight - 120}px`;
+                } else if (questionContainer) {
+                    questionContainer.style.maxHeight = '';
+                }
+            }, 200);
+        });
+    }
+
+    /**
+     * Prevent double-tap zoom on buttons
+     */
+    preventDoubleTabZoom() {
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     }
 
     /**
      * Show email fallback if mailto doesn't work
      */
     showEmailFallback() {
-        alert(`Please send your issue report to: stilla1ex@gmail.com\n\nInclude details about:\n- What page you were on\n- What you were trying to do\n- What went wrong\n- Your browser and device info`);
+        alert(`Your email client could not be opened automatically.\n\nPlease manually send your issue report to: stilla1ex@gmail.com\n\nInclude details about:\n- What page you were on\n- What you were trying to do\n- What went wrong\n- Your browser and device info`);
     }
 }
 

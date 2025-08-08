@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Huawei Mock Exam - Practice Test</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -254,6 +257,78 @@
             <div class="stop-modal-actions">
                 <button id="continue-exam-btn" class="btn btn-secondary">Continue</button>
                 <button id="exit-exam-btn" class="btn btn-danger">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue Report Modal -->
+    <div id="issue-report-modal" class="issue-modal" style="display: none;">
+        <div class="issue-modal-backdrop"></div>
+        <div class="issue-modal-content">
+            <div class="issue-modal-header">
+                <h3>Report Issue</h3>
+                <button id="close-issue-btn" class="close-issue-btn">&times;</button>
+            </div>
+            <div class="issue-modal-body">
+                <p>Help us improve the HCIA Security practice exam by reporting any issues you encounter.</p>
+                
+                <div class="issue-form">
+                    <div class="form-group">
+                        <label for="issue-type">Issue Type:</label>
+                        <select id="issue-type" class="issue-select">
+                            <option value="bug">Bug/Error</option>
+                            <option value="question">Question Issue</option>
+                            <option value="ui">UI/Design Problem</option>
+                            <option value="performance">Performance Issue</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-severity">Severity:</label>
+                        <select id="issue-severity" class="issue-select">
+                            <option value="low">Low - Minor inconvenience</option>
+                            <option value="medium">Medium - Affects functionality</option>
+                            <option value="high">High - Blocks important features</option>
+                            <option value="critical">Critical - App unusable</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-title">Issue Title:</label>
+                        <input type="text" id="issue-title" placeholder="Brief description of the issue" maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-description">Detailed Description:</label>
+                        <textarea id="issue-description" placeholder="Please describe the issue in detail, including steps to reproduce..." rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-expected">Expected Behavior:</label>
+                        <textarea id="issue-expected" placeholder="What did you expect to happen?" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-contact">Your Email (optional):</label>
+                        <input type="email" id="issue-contact" placeholder="your.email@example.com (for follow-up)">
+                    </div>
+                    
+                    <div class="issue-context">
+                        <h4>System Information</h4>
+                        <div class="context-info">
+                            <span><strong>Page:</strong> <span id="context-page">-</span></span>
+                            <span><strong>Browser:</strong> <span id="context-browser">-</span></span>
+                            <span><strong>Timestamp:</strong> <span id="context-timestamp">-</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-actions">
+                        <button id="submit-issue-btn" class="btn btn-primary">Submit Issue Report</button>
+                        <button id="cancel-issue-btn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
