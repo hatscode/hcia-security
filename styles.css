@@ -890,6 +890,12 @@ body {
         margin: 0.75rem 0;
     }
     
+    /* Reduce question container height to 3/4 on mobile */
+    .question-container {
+        max-height: calc(75vh - 75px);
+        min-height: calc(75vh - 75px);
+    }
+    
     .logo h1 {
         font-size: 1.5rem;
         text-align: center;
@@ -1211,12 +1217,12 @@ body {
 /* Landscape Mobile Optimizations */
 @media (max-width: 768px) and (orientation: landscape) {
     .question-container {
-        max-height: calc(100vh - 80px);
-        min-height: calc(100vh - 80px);
+        max-height: calc(75vh - 60px);
+        min-height: calc(75vh - 60px);
     }
     
     .answer-options {
-        max-height: calc(100vh - 300px);
+        max-height: calc(75vh - 225px);
         overflow-y: auto;
     }
     
@@ -1343,12 +1349,12 @@ body {
     }
     
     .question-container {
-        max-height: calc(50vh - 50px);
-        min-height: calc(50vh - 50px);
+        max-height: calc(75vh - 75px);
+        min-height: calc(75vh - 75px);
     }
     
     .answer-options {
-        max-height: calc(50vh - 140px);
+        max-height: calc(75vh - 210px);
     }
     
     .exam-info {
@@ -1356,7 +1362,7 @@ body {
     }
     
     .question-container {
-        max-height: calc(50vh - 75px);
+        max-height: calc(75vh - 112px);
         overflow-y: auto;
     }
     
@@ -1453,8 +1459,8 @@ body {
     .question-container {
         padding: 0.6rem;
         border-radius: 8px;
-        max-height: calc(50vh - 40px);
-        min-height: calc(50vh - 40px);
+        max-height: calc(75vh - 60px);
+        min-height: calc(75vh - 60px);
     }
     
     .logo h1 {
@@ -1511,7 +1517,7 @@ body {
     }
     
     .answer-options {
-        max-height: calc(50vh - 125px);
+        max-height: calc(75vh - 187px);
         margin-bottom: 1.5rem;
     }
     
@@ -1538,8 +1544,8 @@ body {
     }
     
     .question-container {
-        max-height: calc(50vh - 30px);
-        min-height: calc(50vh - 30px);
+        max-height: calc(75vh - 45px);
+        min-height: calc(75vh - 45px);
         padding: 0.8rem;
     }
     
@@ -1558,11 +1564,11 @@ body {
     }
     
     .answer-options {
-        max-height: calc(50vh - 100px);
+        max-height: calc(75vh - 150px);
     }
     
     .question-container {
-        max-height: calc(50vh - 50px);
+        max-height: calc(75vh - 75px);
         padding: 1rem;
     }
     
@@ -2329,7 +2335,7 @@ body {
 @media (max-width: 375px) {
     .question-container {
         padding: 0.75rem;
-        max-height: calc(50vh - 70px);
+        max-height: calc(75vh - 105px);
     }
     
     .question-text {
@@ -2340,7 +2346,7 @@ body {
     
     .answer-options {
         margin-bottom: 1.5rem;
-        max-height: calc(50vh - 110px);
+        max-height: calc(75vh - 165px);
     }
     
     .answer-option {
