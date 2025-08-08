@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huawei Mock Exam - Practice Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+        <div class="container">
+            <header class="header">
+                <div class="logo">
+                    <h1>🚀 Huawei Mock Exam</h1>
+                </div>
+            </header>
+            
+            <main class="main-content">
+                <div class="hero-section">
+                    <h2>Practice for Your Huawei Certification</h2>
+                    
+                    <div class="mock-selection">
+                        <h3>Select Mock Exam</h3>
+                        <div class="mock-options">
+                            <button class="mock-btn active" data-mock="1">Mock 1</button>
+                            <button class="mock-btn" data-mock="2">Mock 2</button>
+                            <button class="mock-btn" data-mock="3">Mock 3</button>
+                            <button class="mock-btn" data-mock="4">Mock 4</button>
+                            <button class="mock-btn" data-mock="5">Mock 5</button>
+                            <button class="mock-btn" data-mock="6">Mock 6</button>
+                        </div>
+                    </div>
+                    
+                    <div class="exam-info">
+                        <div class="info-item">
+                            <span class="info-label">Questions:</span>
+                            <span class="info-value" id="question-count">60</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Time Limit:</span>
+                            <span class="info-value">1h 30min</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Passing Score:</span>
+                            <span class="info-value">70%</span>
+                        </div>
+                    </div>
+                    
+                    <button id="start-exam-btn" class="btn btn-primary" aria-label="Start the Huawei mock exam">
+                        Start Exam
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Question Page -->
+    <div id="question-page" class="page">
+        <div class="container">
+            <header class="exam-header">
+                <div class="exam-progress">
+                    <span id="question-counter">Question 1 of 15</span>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="timer">
+                    <span class="timer-label">Time Remaining:</span>
+                    <span id="timer-display" class="timer-value" aria-live="polite">05:00</span>
+                </div>
+            </header>
+            
+            <main class="question-content">
+                <div class="question-container">
+                    <h2 id="question-text" class="question-text">Question will appear here</h2>
+                    
+                    <div id="answer-options" class="answer-options" role="radiogroup" aria-labelledby="question-text">
+                        <!-- Answer options will be dynamically inserted here -->
+                    </div>
+                    
+                    <div class="question-navigation">
+                        <button id="stop-exam-btn" class="btn btn-warning" aria-label="Stop exam and see results">
+                            Stop Exam
+                        </button>
+                        <button id="next-question-btn" class="btn btn-primary" disabled aria-label="Go to next question">
+                            Next Question
+                        </button>
+                        <button id="submit-exam-btn" class="btn btn-secondary" style="display: none;" aria-label="Submit exam">
+                            Submit Exam
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results-page" class="page">
+        <div class="container">
+            <header class="results-header">
+                <h1>Exam Results</h1>
+            </header>
+            
+            <main class="results-content">
+                <div class="score-summary">
+                    <div class="score-circle">
+                        <span id="score-percentage" class="score-number">0%</span>
+                        <span class="score-label">Score</span>
+                    </div>
+                    
+                    <div class="score-details">
+                        <div class="score-item">
+                            <span class="score-value" id="correct-answers">0</span>
+                            <span class="score-label">Correct</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-value" id="incorrect-answers">0</span>
+                            <span class="score-label">Incorrect</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-value" id="total-questions">15</span>
+                            <span class="score-label">Total</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="feedback-message" class="feedback-message">
+                    <!-- Feedback will be inserted here -->
+                </div>
+                
+                <div class="results-actions">
+                    <button id="view-answers-btn" class="btn btn-secondary">View Detailed Answers</button>
+                    <button id="retake-exam-btn" class="btn btn-primary">Retake Exam</button>
+                </div>
+                
+                <div id="detailed-answers" class="detailed-answers" style="display: none;">
+                    <h3>Detailed Answer Review</h3>
+                    <div id="answer-review-list" class="answer-review-list">
+                        <!-- Detailed answers will be inserted here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading your exam...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
