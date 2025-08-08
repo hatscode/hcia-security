@@ -391,7 +391,7 @@ body {
 }
 
 .answer-options {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     flex: 1;
     overflow-y: auto;
     max-height: calc(100vh - 350px);
@@ -462,7 +462,7 @@ body {
     gap: 0.6rem;
     flex-shrink: 0;
     margin-top: auto;
-    padding-top: 0.6rem;
+    padding-top: 0;
 }
 
 .nav-buttons {
@@ -976,7 +976,7 @@ body {
     
     /* Answer Options Mobile */
     .answer-options {
-        margin-bottom: 1.25rem;
+        margin-bottom: 1.5rem;
         padding: 0.5rem 0;
     }
     
@@ -1005,8 +1005,8 @@ body {
     .question-navigation {
         flex-direction: column;
         gap: 0.5rem;
-        padding: 0.5rem 0 0.75rem 0;
-        margin-top: 0.25rem;
+        padding: 0;
+        margin-top: 0;
     }
     
     .nav-buttons {
@@ -1362,14 +1362,14 @@ body {
     
     /* Reduce answer options margin on mobile for better spacing */
     .answer-options {
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
     }
     
     /* Tighter navigation spacing on mobile */
     .question-navigation {
         gap: 0.5rem;
-        padding-top: 0.5rem;
-        margin-top: 0.3rem;
+        padding-top: 0;
+        margin-top: 0;
     }
 }
 
@@ -1395,6 +1395,16 @@ body {
     .answer-option label {
         font-size: 0.85rem;
         line-height: 1.3;
+    }
+    
+    /* Ensure 1.5rem spacing on small mobile */
+    .answer-options {
+        margin-bottom: 1.5rem;
+    }
+    
+    .question-navigation {
+        padding: 0;
+        margin-top: 0;
     }
     
     .score-circle {
@@ -1502,13 +1512,13 @@ body {
     
     .answer-options {
         max-height: calc(100vh - 250px);
-        margin-bottom: 0.25rem;
+        margin-bottom: 1.5rem;
     }
     
     .question-navigation {
         gap: 0.3rem;
-        padding-top: 0.3rem;
-        margin-top: 0.2rem;
+        padding-top: 0;
+        margin-top: 0;
     }
     
     .nav-buttons {
@@ -2329,7 +2339,7 @@ body {
     }
     
     .answer-options {
-        margin-bottom: 0.2rem;
+        margin-bottom: 1.5rem;
         max-height: calc(100vh - 220px);
     }
     
@@ -2345,8 +2355,8 @@ body {
     
     .question-navigation {
         gap: 0.2rem;
-        padding-top: 0.2rem;
-        margin-top: 0.1rem;
+        padding-top: 0;
+        margin-top: 0;
     }
     
     .nav-buttons {
