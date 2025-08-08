@@ -13,7 +13,12 @@
         <div class="container">
             <header class="header">
                 <div class="logo">
-                    <h1>🚀 Huawei Mock Exam</h1>
+                    <h1>Huawei Security Mock Exam</h1>
+                </div>
+                <div class="header-controls">
+                    <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
+                        <span class="toggle-icon">🌙</span>
+                    </button>
                 </div>
             </header>
             
@@ -84,9 +89,14 @@
                         <button id="stop-exam-btn" class="btn btn-warning" aria-label="Stop exam and see results">
                             Stop Exam
                         </button>
-                        <button id="next-question-btn" class="btn btn-primary" disabled aria-label="Go to next question">
-                            Next Question
-                        </button>
+                        <div class="nav-buttons">
+                            <button id="prev-question-btn" class="btn btn-secondary" disabled aria-label="Go to previous question">
+                                ← Previous
+                            </button>
+                            <button id="next-question-btn" class="btn btn-primary" disabled aria-label="Go to next question">
+                                Next →
+                            </button>
+                        </div>
                         <button id="submit-exam-btn" class="btn btn-secondary" style="display: none;" aria-label="Submit exam">
                             Submit Exam
                         </button>
@@ -133,6 +143,7 @@
                 <div class="results-actions">
                     <button id="view-answers-btn" class="btn btn-secondary">View Detailed Answers</button>
                     <button id="retake-exam-btn" class="btn btn-primary">Retake Exam</button>
+                    <button id="give-feedback-btn" class="btn btn-feedback">Give Feedback</button>
                 </div>
                 
                 <div id="detailed-answers" class="detailed-answers" style="display: none;">
@@ -144,6 +155,114 @@
             </main>
         </div>
     </div>
+
+    <!-- Stop Exam Modal -->
+    <div id="stop-exam-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Stop Exam</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to stop the exam?</p>
+                    <p class="modal-warning">You will get results based on the questions you have answered so far.</p>
+                </div>
+                <div class="modal-actions">
+                    <button id="continue-exam-btn" class="btn btn-primary">Continue Exam</button>
+                    <button id="exit-exam-btn" class="btn btn-danger">Exit Exam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="feedback-modal" style="display: none;">
+        <div class="feedback-modal-content">
+            <div class="feedback-header">
+                <h3>Share Your Feedback</h3>
+                <button id="close-feedback-btn" class="close-feedback-btn">&times;</button>
+            </div>
+            <div class="feedback-body">
+                <p>Help us improve this HCIA Security practice exam!</p>
+                
+                <div class="feedback-form">
+                    <div class="form-group">
+                        <label for="feedback-type">Feedback Type:</label>
+                        <select id="feedback-type" class="feedback-select">
+                            <option value="suggestion">Suggestion</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="question">Question Issue</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="feedback-rating">Overall Rating:</label>
+                        <div class="star-rating">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="feedback-message">Your Message:</label>
+                        <textarea id="feedback-message-text" placeholder="Tell us what you think, report issues, or suggest improvements..." rows="4"></textarea>
+                    </div>
+                    
+                    <div class="feedback-actions">
+                        <button id="submit-feedback-btn" class="btn btn-primary">Submit Feedback</button>
+                        <button id="cancel-feedback-btn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>HCIA Security Practice</h4>
+                    <p>Free practice exams for Huawei Certified ICT Associate - Security</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Connect with Developer</h4>
+                    <div class="social-links">
+                        <a href="https://github.com/stilla1ex" target="_blank" rel="noopener noreferrer" class="social-link github">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                            GitHub
+                        </a>
+                        <a href="https://twitter.com/stilla1ex" target="_blank" rel="noopener noreferrer" class="social-link twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <div class="footer-links">
+                        <button id="footer-feedback-btn" class="footer-link-btn">Give Feedback</button>
+                        <a href="#" onclick="window.location.reload()" class="footer-link">Report Issue</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 HCIA Security Practice. Made with ❤️ by stilla1ex</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen" style="display: none;">

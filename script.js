@@ -34,6 +34,26 @@ class ExamApp {
     async init() {
         console.log('Initializing Huawei Mock Exam Application...');
         
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            await new Promise(resolve => {
+                document.addEventListener('DOMContentLoaded', resolve);
+            });
+        }
+        
+        // Verify essential DOM elements exist
+        const requiredElements = [
+            'home-page', 'question-page', 'results-page', 
+            'start-exam-btn', 'question-text', 'answer-options'
+        ];
+        
+        const missingElements = requiredElements.filter(id => !document.getElementById(id));
+        if (missingElements.length > 0) {
+            console.error('Missing required DOM elements:', missingElements);
+            this.showErrorMessage(`Application initialization failed: Missing elements ${missingElements.join(', ')}`);
+            return;
+        }
+        
         // Load questions from JSON file
         await this.loadMockQuestions();
         
@@ -41,6 +61,8 @@ class ExamApp {
         this.setupPageProtection();
         this.disableTextSelection();
         this.showPage('home-page');
+        
+        console.log('Application initialized successfully');
     }
 
     /**
@@ -188,6 +210,10 @@ class ExamApp {
         // Question page - Next question button
         const nextQuestionBtn = document.getElementById('next-question-btn');
         nextQuestionBtn?.addEventListener('click', () => this.nextQuestion());
+        
+        // Question page - Previous question button
+        const prevQuestionBtn = document.getElementById('prev-question-btn');
+        prevQuestionBtn?.addEventListener('click', () => this.prevQuestion());
 
         // Question page - Submit exam button
         const submitExamBtn = document.getElementById('submit-exam-btn');
@@ -204,6 +230,25 @@ class ExamApp {
         // Results page - Retake exam button
         const retakeExamBtn = document.getElementById('retake-exam-btn');
         retakeExamBtn?.addEventListener('click', () => this.retakeExam());
+
+        // Feedback buttons
+        const giveFeedbackBtn = document.getElementById('give-feedback-btn');
+        giveFeedbackBtn?.addEventListener('click', () => this.showFeedbackModal());
+        
+        const footerFeedbackBtn = document.getElementById('footer-feedback-btn');
+        footerFeedbackBtn?.addEventListener('click', () => this.showFeedbackModal());
+
+        const closeFeedbackBtn = document.getElementById('close-feedback-btn');
+        closeFeedbackBtn?.addEventListener('click', () => this.hideFeedbackModal());
+
+        const cancelFeedbackBtn = document.getElementById('cancel-feedback-btn');
+        cancelFeedbackBtn?.addEventListener('click', () => this.hideFeedbackModal());
+
+        const submitFeedbackBtn = document.getElementById('submit-feedback-btn');
+        submitFeedbackBtn?.addEventListener('click', () => this.submitFeedback());
+
+        // Star rating functionality
+        this.setupStarRating();
 
         // Handle answer selection
         document.addEventListener('change', (event) => {
@@ -273,6 +318,21 @@ class ExamApp {
                 if (radioButtons[answerIndex]) {
                     radioButtons[answerIndex].checked = true;
                     this.handleAnswerSelection(radioButtons[answerIndex].value);
+                }
+            }
+            
+            // Arrow keys for navigation
+            if (event.key === 'ArrowLeft') {
+                const prevBtn = document.getElementById('prev-question-btn');
+                if (prevBtn && !prevBtn.disabled) {
+                    this.prevQuestion();
+                }
+            }
+            
+            if (event.key === 'ArrowRight') {
+                const nextBtn = document.getElementById('next-question-btn');
+                if (nextBtn && !nextBtn.disabled) {
+                    this.nextQuestion();
                 }
             }
             
@@ -416,17 +476,46 @@ class ExamApp {
      */
     displayQuestion() {
         const currentQuestions = this.getCurrentMockQuestions();
+        
+        // Better error checking
+        if (!currentQuestions || currentQuestions.length === 0) {
+            console.error('No questions available for current mock');
+            return;
+        }
+        
+        if (this.currentQuestionIndex >= currentQuestions.length) {
+            console.error(`Question index ${this.currentQuestionIndex} is out of bounds (total: ${currentQuestions.length})`);
+            return;
+        }
+        
         const question = currentQuestions[this.currentQuestionIndex];
+        
+        // Validate question object
+        if (!question) {
+            console.error(`Question at index ${this.currentQuestionIndex} is null or undefined`);
+            return;
+        }
+        
+        if (!question.question || !question.options) {
+            console.error(`Question at index ${this.currentQuestionIndex} is missing required fields:`, question);
+            return;
+        }
+        
         const questionText = document.getElementById('question-text');
         const answerOptions = document.getElementById('answer-options');
         const questionCounter = document.getElementById('question-counter');
         const progressFill = document.getElementById('progress-fill');
         
         console.log(`Displaying question ${this.currentQuestionIndex + 1}: ${question.question}`);
+        console.log(`Question has ${question.options.length} options:`, question.options);
         
         // Update question text
         if (questionText) {
-            questionText.textContent = question.question;
+            const isMultipleChoice = this.isMultipleChoiceQuestion(question);
+            const questionPrefix = isMultipleChoice ? 
+                '<span class="question-type multiple-choice">Multiple Choice</span>' : 
+                '<span class="question-type single-choice">Single Choice</span>';
+            questionText.innerHTML = questionPrefix + question.question;
         }
         
         // Update progress indicator
@@ -444,37 +533,65 @@ class ExamApp {
         if (answerOptions) {
             answerOptions.innerHTML = '';
             
-            question.options.forEach((option, index) => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'answer-option';
+            if (question.options && Array.isArray(question.options) && question.options.length > 0) {
+                // Check if this is a multiple choice question
+                const isMultipleChoice = this.isMultipleChoiceQuestion(question);
                 
-                const radioInput = document.createElement('input');
-                radioInput.type = 'radio';
-                radioInput.name = 'answer';
-                radioInput.value = index;
-                radioInput.id = `option-${index}`;
-                
-                // Check if this option was previously selected
-                if (this.userAnswers[this.currentQuestionIndex] === index) {
-                    radioInput.checked = true;
-                    optionDiv.classList.add('selected');
-                }
-                
-                const label = document.createElement('label');
-                label.htmlFor = `option-${index}`;
-                label.textContent = option;
-                
-                optionDiv.appendChild(radioInput);
-                optionDiv.appendChild(label);
-                
-                // Add click handler for the entire option div
-                optionDiv.addEventListener('click', () => {
-                    radioInput.checked = true;
-                    this.handleAnswerSelection(index);
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'answer-option';
+                    
+                    const inputElement = document.createElement('input');
+                    inputElement.type = isMultipleChoice ? 'checkbox' : 'radio';
+                    inputElement.name = isMultipleChoice ? `answer-${index}` : 'answer';
+                    inputElement.value = index;
+                    inputElement.id = `option-${index}`;
+                    
+                    // Check if this option was previously selected
+                    if (isMultipleChoice) {
+                        const userAnswer = this.userAnswers[this.currentQuestionIndex];
+                        if (Array.isArray(userAnswer) && userAnswer.includes(index)) {
+                            inputElement.checked = true;
+                            optionDiv.classList.add('selected');
+                        }
+                    } else {
+                        if (this.userAnswers[this.currentQuestionIndex] === index) {
+                            inputElement.checked = true;
+                            optionDiv.classList.add('selected');
+                        }
+                    }
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = `option-${index}`;
+                    label.textContent = option;
+                    
+                    optionDiv.appendChild(inputElement);
+                    optionDiv.appendChild(label);
+                    
+                    // Add click handler for the entire option div
+                    optionDiv.addEventListener('click', (e) => {
+                        // Prevent double triggering when clicking the input directly
+                        if (e.target !== inputElement) {
+                            inputElement.checked = !inputElement.checked;
+                        }
+                        this.handleAnswerSelection(index, isMultipleChoice);
+                    });
+                    
+                    // Add change handler for the input element
+                    inputElement.addEventListener('change', () => {
+                        this.handleAnswerSelection(index, isMultipleChoice);
+                    });
+                    
+                    answerOptions.appendChild(optionDiv);
                 });
                 
-                answerOptions.appendChild(optionDiv);
-            });
+                console.log(`Successfully created ${question.options.length} ${isMultipleChoice ? 'multiple choice' : 'single choice'} answer options`);
+            } else {
+                console.error('Question options are invalid:', question.options);
+                answerOptions.innerHTML = '<div class="error-message">Error: No answer options available for this question.</div>';
+            }
+        } else {
+            console.error('answerOptions element not found in DOM');
         }
         
         // Update navigation buttons
@@ -482,28 +599,76 @@ class ExamApp {
     }
 
     /**
+     * Check if a question is multiple choice
+     */
+    isMultipleChoiceQuestion(question) {
+        if (!question || !question.question) {
+            return false;
+        }
+        
+        const questionText = question.question.toLowerCase();
+        return questionText.includes('multiple choice') || 
+               questionText.includes('(select') || 
+               questionText.includes('select ') ||
+               questionText.includes('which of the following are') ||
+               questionText.includes('which of the following can be') ||
+               questionText.includes('which of the following statements are');
+    }
+
+    /**
      * Handle answer selection
      */
-    handleAnswerSelection(answerIndex) {
-        console.log(`Answer selected: ${answerIndex} for question ${this.currentQuestionIndex + 1}`);
+    handleAnswerSelection(answerIndex, isMultipleChoice = false) {
+        console.log(`Answer selected: ${answerIndex} for question ${this.currentQuestionIndex + 1} (Multiple choice: ${isMultipleChoice})`);
         
-        // Store the answer
-        this.userAnswers[this.currentQuestionIndex] = parseInt(answerIndex);
+        if (isMultipleChoice) {
+            // Handle multiple choice selection
+            let currentAnswers = this.userAnswers[this.currentQuestionIndex];
+            if (!Array.isArray(currentAnswers)) {
+                currentAnswers = [];
+            }
+            
+            const indexPosition = currentAnswers.indexOf(answerIndex);
+            if (indexPosition === -1) {
+                // Add the answer if not already selected
+                currentAnswers.push(answerIndex);
+            } else {
+                // Remove the answer if already selected
+                currentAnswers.splice(indexPosition, 1);
+            }
+            
+            this.userAnswers[this.currentQuestionIndex] = currentAnswers;
+            
+            // Update UI to show selection
+            document.querySelectorAll('.answer-option').forEach((option, index) => {
+                const isSelected = currentAnswers.includes(index);
+                option.classList.toggle('selected', isSelected);
+                const input = option.querySelector('input');
+                if (input) {
+                    input.checked = isSelected;
+                }
+            });
+            
+        } else {
+            // Handle single choice selection
+            this.userAnswers[this.currentQuestionIndex] = parseInt(answerIndex);
+            
+            // Update UI to show selection
+            document.querySelectorAll('.answer-option').forEach((option, index) => {
+                option.classList.toggle('selected', index === parseInt(answerIndex));
+            });
+        }
         
-        // Update UI to show selection
-        document.querySelectorAll('.answer-option').forEach((option, index) => {
-            option.classList.toggle('selected', index === parseInt(answerIndex));
-        });
-        
-        // Enable next button
+        // Enable next button if at least one answer is selected
         const nextBtn = document.getElementById('next-question-btn');
         const submitBtn = document.getElementById('submit-exam-btn');
-        if (nextBtn) {
-            nextBtn.disabled = false;
-        }
-        if (submitBtn) {
-            submitBtn.disabled = false;
-        }
+        
+        const hasAnswer = isMultipleChoice ? 
+            (Array.isArray(this.userAnswers[this.currentQuestionIndex]) && this.userAnswers[this.currentQuestionIndex].length > 0) :
+            (this.userAnswers[this.currentQuestionIndex] !== undefined);
+            
+        if (nextBtn) nextBtn.disabled = !hasAnswer;
+        if (submitBtn && submitBtn.style.display !== 'none') submitBtn.disabled = !hasAnswer;
     }
 
     /**
@@ -511,12 +676,20 @@ class ExamApp {
      */
     updateNavigationButtons() {
         const nextBtn = document.getElementById('next-question-btn');
+        const prevBtn = document.getElementById('prev-question-btn');
         const submitBtn = document.getElementById('submit-exam-btn');
         
         const currentQuestions = this.getCurrentMockQuestions();
         const isLastQuestion = this.currentQuestionIndex === currentQuestions.length - 1;
+        const isFirstQuestion = this.currentQuestionIndex === 0;
         const hasAnswer = this.userAnswers[this.currentQuestionIndex] !== null;
         
+        // Previous button logic
+        if (prevBtn) {
+            prevBtn.disabled = isFirstQuestion;
+        }
+        
+        // Next/Submit button logic
         if (nextBtn && submitBtn) {
             if (isLastQuestion) {
                 nextBtn.style.display = 'none';
@@ -537,6 +710,19 @@ class ExamApp {
         const currentQuestions = this.getCurrentMockQuestions();
         if (this.currentQuestionIndex < currentQuestions.length - 1) {
             this.currentQuestionIndex++;
+            this.displayQuestion();
+            
+            // Scroll to top of question
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    /**
+     * Move to the previous question
+     */
+    prevQuestion() {
+        if (this.currentQuestionIndex > 0) {
+            this.currentQuestionIndex--;
             this.displayQuestion();
             
             // Scroll to top of question
@@ -616,12 +802,37 @@ class ExamApp {
         
         // Count correct, incorrect, and unanswered questions
         currentQuestions.forEach((question, index) => {
-            if (this.userAnswers[index] === question.correctAnswer) {
-                correctAnswers++;
-            } else if (this.userAnswers[index] !== null && this.userAnswers[index] !== undefined) {
-                incorrectAnswers++;
-            } else {
+            const userAnswer = this.userAnswers[index];
+            const isMultipleChoice = this.isMultipleChoiceQuestion(question);
+            
+            if (userAnswer === null || userAnswer === undefined || 
+                (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                 unansweredQuestions++;
+            } else {
+                let isCorrect = false;
+                
+                if (isMultipleChoice) {
+                    // For multiple choice, check if the user selected all correct answers
+                    // Note: You may need to adjust this logic based on how correctAnswer is stored
+                    // For now, assuming correctAnswer is an array for multiple choice questions
+                    const correctAnswerArray = Array.isArray(question.correctAnswer) ? 
+                        question.correctAnswer : [question.correctAnswer];
+                    
+                    if (Array.isArray(userAnswer)) {
+                        // Check if arrays are equal (same elements)
+                        isCorrect = correctAnswerArray.length === userAnswer.length &&
+                                   correctAnswerArray.every(ans => userAnswer.includes(ans));
+                    }
+                } else {
+                    // Single choice
+                    isCorrect = userAnswer === question.correctAnswer;
+                }
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                } else {
+                    incorrectAnswers++;
+                }
             }
         });
         
@@ -741,11 +952,22 @@ class ExamApp {
             
             const userAnswer = this.userAnswers[index];
             const correctAnswer = question.correctAnswer;
-            const isCorrect = userAnswer === correctAnswer;
+            const isMultipleChoice = this.isMultipleChoiceQuestion(question);
+            
+            let isCorrect = false;
+            if (isMultipleChoice) {
+                const correctAnswerArray = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+                if (Array.isArray(userAnswer)) {
+                    isCorrect = correctAnswerArray.length === userAnswer.length &&
+                               correctAnswerArray.every(ans => userAnswer.includes(ans));
+                }
+            } else {
+                isCorrect = userAnswer === correctAnswer;
+            }
             
             let reviewHTML = `
                 <div class="review-question">
-                    <strong>Question ${index + 1}:</strong> ${question.question}
+                    <strong>Question ${index + 1} ${isMultipleChoice ? '(Multiple Choice)' : ''}:</strong> ${question.question}
                 </div>
                 <div class="review-answers">
             `;
@@ -754,18 +976,29 @@ class ExamApp {
                 let answerClass = 'not-selected';
                 let prefix = '';
                 
-                if (optionIndex === correctAnswer) {
+                const isCorrectOption = isMultipleChoice ? 
+                    (Array.isArray(correctAnswer) ? correctAnswer.includes(optionIndex) : correctAnswer === optionIndex) :
+                    (optionIndex === correctAnswer);
+                
+                const isUserSelected = isMultipleChoice ?
+                    (Array.isArray(userAnswer) && userAnswer.includes(optionIndex)) :
+                    (optionIndex === userAnswer);
+                
+                if (isCorrectOption) {
                     answerClass = 'correct';
                     prefix = '✓ ';
-                } else if (optionIndex === userAnswer && !isCorrect) {
+                } else if (isUserSelected && !isCorrectOption) {
                     answerClass = 'user-incorrect';
                     prefix = '✗ ';
-                } else if (userAnswer === null || userAnswer === undefined) {
+                } else if (userAnswer === null || userAnswer === undefined || 
+                          (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                     answerClass = 'unanswered';
-                    if (optionIndex === correctAnswer) {
+                    if (isCorrectOption) {
                         answerClass = 'correct';
                         prefix = '✓ ';
                     }
+                } else if (isUserSelected) {
+                    prefix = '→ ';
                 }
                 
                 reviewHTML += `
@@ -777,7 +1010,8 @@ class ExamApp {
             
             // Add status indicator
             let statusHTML = '';
-            if (userAnswer === null || userAnswer === undefined) {
+            if (userAnswer === null || userAnswer === undefined || 
+                (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                 statusHTML = '<div class="review-status unanswered">❓ Not Answered</div>';
             } else if (isCorrect) {
                 statusHTML = '<div class="review-status correct">✅ Correct</div>';
@@ -859,6 +1093,154 @@ class ExamApp {
         
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * Setup star rating functionality
+     */
+    setupStarRating() {
+        const stars = document.querySelectorAll('.star');
+        let currentRating = 0;
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                currentRating = index + 1;
+                this.updateStarDisplay(currentRating);
+            });
+
+            star.addEventListener('mouseenter', () => {
+                this.updateStarDisplay(index + 1);
+            });
+        });
+
+        const starContainer = document.querySelector('.star-rating');
+        if (starContainer) {
+            starContainer.addEventListener('mouseleave', () => {
+                this.updateStarDisplay(currentRating);
+            });
+        }
+    }
+
+    /**
+     * Update star display
+     */
+    updateStarDisplay(rating) {
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    /**
+     * Show feedback modal
+     */
+    showFeedbackModal() {
+        const modal = document.getElementById('feedback-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Reset form
+            this.resetFeedbackForm();
+        }
+    }
+
+    /**
+     * Hide feedback modal
+     */
+    hideFeedbackModal() {
+        const modal = document.getElementById('feedback-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    /**
+     * Reset feedback form
+     */
+    resetFeedbackForm() {
+        const feedbackType = document.getElementById('feedback-type');
+        const feedbackMessage = document.getElementById('feedback-message-text');
+        const stars = document.querySelectorAll('.star');
+
+        if (feedbackType) feedbackType.value = 'suggestion';
+        if (feedbackMessage) feedbackMessage.value = '';
+        
+        stars.forEach(star => star.classList.remove('active'));
+    }
+
+    /**
+     * Submit feedback
+     */
+    submitFeedback() {
+        const feedbackType = document.getElementById('feedback-type');
+        const feedbackMessage = document.getElementById('feedback-message-text');
+        const activeStars = document.querySelectorAll('.star.active');
+
+        const feedback = {
+            type: feedbackType?.value || 'suggestion',
+            rating: activeStars.length,
+            message: feedbackMessage?.value || '',
+            timestamp: new Date().toISOString(),
+            examData: {
+                selectedMock: this.selectedMock,
+                questionsAnswered: this.userAnswers.filter(a => a !== null).length,
+                totalQuestions: this.getCurrentMockQuestions().length
+            }
+        };
+
+        // Validate feedback
+        if (!feedback.message.trim()) {
+            alert('Please enter a message before submitting feedback.');
+            return;
+        }
+
+        // Simulate feedback submission (in a real app, you'd send this to a server)
+        console.log('Feedback submitted:', feedback);
+        
+        // Show success message
+        this.showFeedbackSuccess();
+        
+        // Hide modal after short delay
+        setTimeout(() => {
+            this.hideFeedbackModal();
+        }, 2000);
+    }
+
+    /**
+     * Show feedback success message
+     */
+    showFeedbackSuccess() {
+        const feedbackBody = document.querySelector('.feedback-body');
+        if (feedbackBody) {
+            feedbackBody.innerHTML = `
+                <div class="feedback-success">
+                    <div class="success-icon">✅</div>
+                    <h3>Thank You!</h3>
+                    <p>Your feedback has been received and will help improve the application.</p>
+                    <p>You can also reach out on social media:</p>
+                    <div class="success-social-links">
+                        <a href="https://github.com/stilla1ex" target="_blank" class="social-link github">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                            GitHub
+                        </a>
+                        <a href="https://twitter.com/stilla1ex" target="_blank" class="social-link twitter">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                            Twitter
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 

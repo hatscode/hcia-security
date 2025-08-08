@@ -226,7 +226,7 @@
             "Tips"
           ],
           "correctAnswer": 0,
-          "explanation": "-"
+          "explanation": "The predefined signature actions in firewall intrusion prevention typically include: Alarm (log the event), Block (block the connection), and Tips (reset the connection). 'Release' is not a standard predefined signature action. Release would refer to allowing or permitting traffic, which is the default behavior rather than a specific intrusion prevention action."
         },
         {
           "question": "Which of the following is the correct process for implementing the intrusion prevention mechanism?",
@@ -319,7 +319,7 @@
             "Collision resistance"
           ],
           "correctAnswer": 0,
-          "explanation": "-"
+          "explanation": "Hash algorithms have several key characteristics: Fast forward (quick to compute), Irreversible (one-way function - cannot derive input from output), Input sensitivity (small changes in input cause significant changes in output), and Collision resistance (difficult to find two inputs that produce the same hash). All of these are characteristics of hash algorithms, but the question asks for characteristics in general, making 'Fast forward' the primary answer as it's the most fundamental operational characteristic."
         },
         {
           "question": "Asymmetric encryption algorithm has high efficiency, simple algorithm, low system overhead, and is suitable for encrypting a large amount of data.",
@@ -3905,8 +3905,8 @@
             "HWTACACS",
             "LDP"
           ],
-          "correctAnswer": 0,
-          "explanation": "The correct answer is AC."
+          "correctAnswer": [0, 2],
+          "explanation": "The correct answers are A (RADIUS) and C (HWTACACS). RADIUS and HWTACACS are both remote authentication protocols used for centralized authentication, authorization, and accounting. Local authentication is not remote, and LDP (Label Distribution Protocol) is not an authentication protocol."
         },
         {
           "question": "Data analysis technology is to find and match keywords or key phrases in the acquired data stream or information flow, and analyze the correlation of time. Which of the following is not an evidence analysis technique?",
@@ -3938,8 +3938,8 @@
             "When the disk space is insufficient, it will be recorded as an \"information event\"",
             "Failure audit event refers to a failed audit security login attempt, such as a failure when the user views accesses the network drive is logged as a failed audit event."
           ],
-          "correctAnswer": 1,
-          "explanation": "The correct answer is BCD."
+          "correctAnswer": [1, 2, 3],
+          "explanation": "The correct answers are B, C, and D. Option A is incorrect because a warning event indicates a potential problem, not a successful operation. Option B is correct - error events do refer to function/data loss. Option C is correct - insufficient disk space is typically recorded as an information event. Option D is correct - failed audit events do refer to failed security login attempts."
         },
         {
           "question": "Which of the following protection levels are included in the TCSEC standard? (Multiple Choice)",
