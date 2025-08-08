@@ -1546,6 +1546,9 @@ This issue was reported via the HCIA Security Mock Exam application.
         
         // Prevent double-tap zoom on buttons
         this.preventDoubleTabZoom();
+        
+        // Ensure navigation is always accessible on mobile
+        this.ensureNavigationAccessibility();
     }
 
     /**
@@ -1630,6 +1633,80 @@ This issue was reported via the HCIA Security Mock Exam application.
      */
     showEmailFallback() {
         alert(`Your email client could not be opened automatically.\n\nPlease manually send your issue report to: stilla1ex@gmail.com\n\nInclude details about:\n- What page you were on\n- What you were trying to do\n- What went wrong\n- Your browser and device info`);
+    }
+
+    /**
+     * Ensure navigation buttons are always accessible on mobile devices
+     */
+    ensureNavigationAccessibility() {
+        // For screens smaller than 768px, add enhanced scroll behavior
+        if (window.innerWidth <= 768) {
+            // Add visual indicator if content is scrollable
+            const answerOptions = document.querySelector('.answer-options');
+            const questionNavigation = document.querySelector('.question-navigation');
+            
+            if (answerOptions && questionNavigation) {
+                // Add scroll indicator for answer options
+                const addScrollIndicator = () => {
+                    const hasScrollableContent = answerOptions.scrollHeight > answerOptions.clientHeight;
+                    
+                    if (hasScrollableContent) {
+                        answerOptions.classList.add('scrollable-content');
+                        
+                        // Add CSS for scroll indicator if not already added
+                        if (!document.querySelector('#scroll-indicator-style')) {
+                            const style = document.createElement('style');
+                            style.id = 'scroll-indicator-style';
+                            style.textContent = `
+                                .scrollable-content::after {
+                                    content: '⇩ Scroll for more';
+                                    position: absolute;
+                                    bottom: 0;
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    background: rgba(66, 153, 225, 0.9);
+                                    color: white;
+                                    padding: 0.25rem 0.5rem;
+                                    border-radius: 4px;
+                                    font-size: 0.7rem;
+                                    pointer-events: none;
+                                    z-index: 10;
+                                }
+                                .scrollable-content.scrolled-to-bottom::after {
+                                    display: none;
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        }
+                        
+                        // Hide indicator when scrolled to bottom
+                        answerOptions.addEventListener('scroll', () => {
+                            const isScrolledToBottom = answerOptions.scrollTop + answerOptions.clientHeight >= answerOptions.scrollHeight - 5;
+                            answerOptions.classList.toggle('scrolled-to-bottom', isScrolledToBottom);
+                        });
+                    }
+                };
+                
+                // Auto-scroll to navigation after selecting an answer on very small screens
+                if (window.innerWidth <= 480) {
+                    const answers = document.querySelectorAll('.answer-option input');
+                    answers.forEach(answer => {
+                        answer.addEventListener('change', () => {
+                            setTimeout(() => {
+                                questionNavigation.scrollIntoView({ 
+                                    behavior: 'smooth', 
+                                    block: 'nearest',
+                                    inline: 'nearest'
+                                });
+                            }, 300);
+                        });
+                    });
+                }
+                
+                // Call on question display
+                setTimeout(addScrollIndicator, 100);
+            }
+        }
     }
 }
 
