@@ -2334,22 +2334,55 @@ body {
 .feedback-success {
     text-align: center;
     padding: 2rem 0;
+    animation: fadeInSuccess 0.5s ease-in-out;
+}
+
+@keyframes fadeInSuccess {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .success-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
+    color: #48bb78;
+    animation: bounceIn 0.6s ease-in-out;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .feedback-success h3 {
-    color: #2d3748;
+    color: #e2e8f0;
     margin-bottom: 1rem;
     font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .feedback-success p {
-    color: #4a5568;
+    color: #a0aec0;
     margin-bottom: 1rem;
+    line-height: 1.6;
 }
 
 .success-social-links {
@@ -2360,15 +2393,31 @@ body {
 }
 
 .success-social-links .social-link {
-    background: rgba(102, 126, 234, 0.1);
+    background: rgba(102, 126, 234, 0.2);
     color: #667eea;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 
 .success-social-links .social-link:hover {
-    background: rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.dismiss-hint {
+    margin-top: 1.5rem;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.dismiss-hint small {
+    color: #a0aec0;
+    font-size: 0.8rem;
 }
 
 /* Footer Styles */
