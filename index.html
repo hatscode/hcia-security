@@ -156,46 +156,76 @@
 
     <!-- Feedback Modal -->
     <div id="feedback-modal" class="feedback-modal" style="display: none;">
-        <div class="feedback-modal-content">
-            <div class="feedback-header">
-                <h3>Share Your Feedback</h3>
-                <button id="close-feedback-btn" class="close-feedback-btn">&times;</button>
-            </div>
-            <div class="feedback-body">
-                <p>Help us improve this HCIA Security practice exam!</p>
+        <div class="feedback-modal-backdrop"></div>
+        <div class="feedback-modal-container">
+            <div class="feedback-modal-content">
+                <div class="feedback-header">
+                    <div class="feedback-title">
+                        <h3>Share Your Feedback</h3>
+                        <p class="feedback-subtitle">Help us improve your experience</p>
+                    </div>
+                    <button id="close-feedback-btn" class="close-feedback-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
                 
-                <div class="feedback-form">
-                    <div class="form-group">
-                        <label for="feedback-type">Feedback Type:</label>
-                        <select id="feedback-type" class="feedback-select">
-                            <option value="suggestion">Suggestion</option>
-                            <option value="bug">Bug Report</option>
-                            <option value="question">Question Issue</option>
-                            <option value="feature">Feature Request</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="feedback-rating">Overall Rating:</label>
-                        <div class="star-rating">
-                            <span class="star" data-rating="1">★</span>
-                            <span class="star" data-rating="2">★</span>
-                            <span class="star" data-rating="3">★</span>
-                            <span class="star" data-rating="4">★</span>
-                            <span class="star" data-rating="5">★</span>
+                <div class="feedback-body">
+                    <form class="feedback-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="feedback-type">Category</label>
+                                <select id="feedback-type" class="form-input">
+                                    <option value="">Select category</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="bug">Bug Report</option>
+                                    <option value="question">Question Issue</option>
+                                    <option value="feature">Feature Request</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <label for="star5" class="star">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4" class="star">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3" class="star">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2" class="star">★</label>
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1" class="star">★</label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="feedback-message">Your Message:</label>
-                        <textarea id="feedback-message-text" placeholder="Tell us what you think, report issues, or suggest improvements..." rows="4"></textarea>
-                    </div>
-                    
-                    <div class="feedback-actions">
-                        <button id="submit-feedback-btn" class="btn btn-primary">Submit Feedback</button>
-                        <button id="cancel-feedback-btn" class="btn btn-secondary">Cancel</button>
-                    </div>
+                        
+                        <div class="form-group">
+                            <label for="feedback-message-text">Your Message</label>
+                            <textarea id="feedback-message-text" class="form-input" placeholder="Share your thoughts, suggestions, or report any issues..." rows="4"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedback-email">Email (optional)</label>
+                            <input type="email" id="feedback-email" class="form-input" placeholder="your.email@example.com">
+                            <small class="form-hint">We'll only use this to follow up on your feedback</small>
+                        </div>
+                        
+                        <div class="feedback-actions">
+                            <button type="button" id="cancel-feedback-btn" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" id="submit-feedback-btn" class="btn btn-primary">
+                                <span>Send Feedback</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
