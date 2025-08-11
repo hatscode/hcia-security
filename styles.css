@@ -565,7 +565,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    padding: 1rem 0 2rem;
+    padding: 1rem 0 1rem;
 }
 
 /* Performance Overview */
@@ -1430,6 +1430,11 @@ body {
         margin: 0 auto 1.5rem;
     }
     
+    .results-content {
+        gap: 1.5rem;
+        padding: 0.75rem 0 0.5rem;
+    }
+    
     .score-number {
         font-size: 2rem;
     }
@@ -1778,6 +1783,11 @@ body {
     .question-container,
     .score-summary {
         padding: 1rem;
+    }
+    
+    .results-content {
+        gap: 1rem;
+        padding: 0.5rem 0 0.25rem;
     }
     
     /* Ultra-compact mobile layout */
@@ -2365,8 +2375,8 @@ body {
 .app-footer {
     background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
     color: white;
-    padding: 3rem 0 1rem;
-    margin-top: 4rem;
+    padding: 2rem 0 1rem;
+    margin-top: 2rem;
 }
 
 .footer-content {
@@ -2475,27 +2485,94 @@ body {
 /* Responsive Footer */
 @media (max-width: 768px) {
     .app-footer {
-        padding: 2rem 0 1rem;
+        padding: 1.5rem 0 1rem;
+        margin-top: 1.5rem;
     }
     
     .footer-content {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
         text-align: center;
+        margin-bottom: 1rem;
     }
     
     .footer-section {
         min-width: auto;
     }
     
+    .footer-section h4 {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .footer-section p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+    
     .social-links, .support-links {
         justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .social-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
     }
     
     .footer-links {
         align-items: center;
     }
     
+    .footer-bottom {
+        padding-top: 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Extra small devices (phones in portrait) */
+@media (max-width: 480px) {
+    .app-footer {
+        padding: 1rem 0 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .footer-content {
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .footer-section h4 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .footer-section p {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .social-links, .support-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    
+    .social-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
+    }
+    
+    .footer-bottom {
+        padding-top: 0.75rem;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
     .feedback-modal-content {
         width: 95%;
         margin: 1rem;
