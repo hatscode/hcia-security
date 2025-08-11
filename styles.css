@@ -2536,6 +2536,7 @@ body {
     .app-footer {
         padding: 1.5rem 0 1rem;
         margin-top: 1.5rem;
+        text-align: center;
     }
     
     .footer-content {
@@ -2543,25 +2544,34 @@ body {
         gap: 1rem;
         text-align: center;
         margin-bottom: 1rem;
+        align-items: center;
     }
     
     .footer-section {
         min-width: auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .footer-section h4 {
         font-size: 1.1rem;
         margin-bottom: 0.75rem;
+        text-align: center;
     }
     
     .footer-section p {
         font-size: 0.9rem;
         margin-bottom: 0.75rem;
+        text-align: center;
     }
     
     .social-links, .support-links {
         justify-content: center;
         gap: 0.5rem;
+        display: flex;
+        flex-wrap: wrap;
     }
     
     .social-link {
@@ -2571,11 +2581,17 @@ body {
     
     .footer-links {
         align-items: center;
+        text-align: center;
+    }
+    
+    .footer-link-btn {
+        text-align: center;
     }
     
     .footer-bottom {
         padding-top: 1rem;
         font-size: 0.8rem;
+        text-align: center;
     }
 }
 
@@ -2584,27 +2600,42 @@ body {
     .app-footer {
         padding: 1rem 0 0.75rem;
         margin-top: 1rem;
+        text-align: center;
     }
     
     .footer-content {
         gap: 0.75rem;
         margin-bottom: 0.75rem;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .footer-section {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
     }
     
     .footer-section h4 {
         font-size: 1rem;
         margin-bottom: 0.5rem;
+        text-align: center;
     }
     
     .footer-section p {
         font-size: 0.85rem;
         margin-bottom: 0.5rem;
+        text-align: center;
+        max-width: 280px;
     }
     
     .social-links, .support-links {
         flex-direction: column;
         align-items: center;
         gap: 0.4rem;
+        width: 100%;
     }
     
     .social-link {
@@ -2613,11 +2644,22 @@ body {
         width: 100%;
         max-width: 200px;
         justify-content: center;
+        text-align: center;
+    }
+    
+    .footer-links {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-link-btn {
+        text-align: center;
     }
     
     .footer-bottom {
         padding-top: 0.75rem;
         font-size: 0.75rem;
+        text-align: center;
     }
 }
 
