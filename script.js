@@ -1861,10 +1861,12 @@ class ExamApp {
     resetFeedbackForm() {
         const feedbackType = document.getElementById('feedback-type');
         const feedbackMessage = document.getElementById('feedback-message-text');
+        const feedbackEmail = document.getElementById('feedback-email');
         const stars = document.querySelectorAll('.star');
 
-        if (feedbackType) feedbackType.value = 'suggestion';
+        if (feedbackType) feedbackType.value = '';
         if (feedbackMessage) feedbackMessage.value = '';
+        if (feedbackEmail) feedbackEmail.value = '';
         
         stars.forEach(star => star.classList.remove('active'));
     }
@@ -1875,6 +1877,7 @@ class ExamApp {
     async submitFeedback() {
         const feedbackType = document.getElementById('feedback-type');
         const feedbackMessage = document.getElementById('feedback-message-text');
+        const feedbackEmail = document.getElementById('feedback-email');
         const activeStars = document.querySelectorAll('.star.active');
 
         const feedback = {
@@ -1882,6 +1885,7 @@ class ExamApp {
             type: feedbackType?.value || 'suggestion',
             rating: activeStars.length,
             message: feedbackMessage?.value || '',
+            email: feedbackEmail?.value || '',
             timestamp: new Date().toISOString(),
             userAgent: navigator.userAgent,
             examData: {
@@ -1939,8 +1943,8 @@ class ExamApp {
      * Submit feedback to Google Sheets via Apps Script
      */
     async submitToGoogleSheets(feedback) {
-        // Google Apps Script Web App URL (this would be configured by the administrator)
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        // Google Apps Script Web App URL - Your actual deployment URL
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbydpaZ1AKQDY6dPNT8xMBU1o060xorrBx_FxaNbNDe6MYymXOOHpJ7zXr6OWjMueOhD/exec';
         
         // Note: In a real implementation, you would:
         // 1. Create a Google Apps Script that accepts POST requests
