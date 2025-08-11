@@ -108,46 +108,160 @@
     <div id="results-page" class="page">
         <div class="container">
             <header class="results-header">
-                <h1>Exam Results</h1>
+                <div class="results-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>Exam Complete</span>
+                </div>
+                <h1>Your Results</h1>
+                <p class="results-subtitle">HCIA Security Practice Exam</p>
             </header>
             
             <main class="results-content">
-                <div class="score-summary">
-                    <div class="score-circle">
-                        <span id="score-percentage" class="score-number">0%</span>
-                        <span class="score-label">Score</span>
+                <!-- Performance Overview -->
+                <div class="performance-overview">
+                    <div class="score-card primary">
+                        <div class="score-card-header">
+                            <h3>Overall Score</h3>
+                            <div class="score-trend">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring-background" cx="60" cy="60" r="52" />
+                                    <circle id="progress-ring-foreground" class="progress-ring-foreground" cx="60" cy="60" r="52" />
+                                </svg>
+                                <div class="score-text">
+                                    <span id="score-percentage" class="score-number">0%</span>
+                                    <span class="score-label">Score</span>
+                                </div>
+                            </div>
+                            <div class="pass-status">
+                                <div id="pass-indicator" class="status-indicator">
+                                    <span class="status-icon">⚪</span>
+                                    <span id="pass-text" class="status-text">Evaluating...</span>
+                                </div>
+                                <p class="pass-requirement">Passing score: 70%</p>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="score-details">
-                        <div class="score-item">
-                            <span class="score-value" id="correct-answers">0</span>
-                            <span class="score-label">Correct</span>
+                    <div class="stats-grid">
+                        <div class="stat-card correct">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="20 6 9 17l-5-5"/>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="correct-answers" class="stat-value">0</span>
+                                <span class="stat-label">Correct</span>
+                            </div>
                         </div>
-                        <div class="score-item">
-                            <span class="score-value" id="incorrect-answers">0</span>
-                            <span class="score-label">Incorrect</span>
+                        
+                        <div class="stat-card incorrect">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="incorrect-answers" class="stat-value">0</span>
+                                <span class="stat-label">Incorrect</span>
+                            </div>
                         </div>
-                        <div class="score-item">
-                            <span class="score-value" id="total-questions">15</span>
-                            <span class="score-label">Total</span>
+                        
+                        <div class="stat-card total">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14,2 14,8 20,8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10,9 9,9 8,9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="total-questions" class="stat-value">15</span>
+                                <span class="stat-label">Total Questions</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card time">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="time-taken" class="stat-value">--:--</span>
+                                <span class="stat-label">Time Taken</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div id="feedback-message" class="feedback-message">
-                    <!-- Feedback will be inserted here -->
+                <!-- Performance Insights -->
+                <div class="performance-insights">
+                    <h3>Performance Insights</h3>
+                    <div id="feedback-message" class="insights-content">
+                        <!-- Feedback will be inserted here -->
+                    </div>
+                    
+                    <div class="recommendations">
+                        <h4>Recommendations</h4>
+                        <div id="recommendations-list" class="recommendations-list">
+                            <!-- Recommendations will be inserted here -->
+                        </div>
+                    </div>
                 </div>
                 
+                <!-- Action Buttons -->
                 <div class="results-actions">
-                    <button id="view-answers-btn" class="btn btn-secondary">View Detailed Answers</button>
-                    <button id="retake-exam-btn" class="btn btn-primary">Retake Exam</button>
-                    <button id="give-feedback-btn" class="btn btn-feedback">Give Feedback</button>
+                    <button id="view-answers-btn" class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Review Answers
+                    </button>
+                    <button id="retake-exam-btn" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <polyline points="23 20 23 14 17 14"></polyline>
+                            <path d="20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                        </svg>
+                        Retake Exam
+                    </button>
+                    <button id="give-feedback-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        Give Feedback
+                    </button>
                 </div>
                 
-                <div id="detailed-answers" class="detailed-answers" style="display: none;">
-                    <h3>Detailed Answer Review</h3>
-                    <div id="answer-review-list" class="answer-review-list">
+                <!-- Detailed Review Section -->
+                <div id="detailed-answers" class="detailed-review" style="display: none;">
+                    <div class="review-header">
+                        <h3>Answer Review</h3>
+                        <p>Review your answers and explanations for each question</p>
+                    </div>
+                    <div id="answer-review-list" class="review-list">
                         <!-- Detailed answers will be inserted here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
                     </div>
                 </div>
             </main>
