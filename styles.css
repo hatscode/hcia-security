@@ -1941,6 +1941,27 @@ body {
     color: #a0aec0;
 }
 
+/* Select dropdown specific styling */
+.form-input select,
+.form-input option {
+    background: #2d3748;
+    color: #e2e8f0;
+}
+
+.form-input option {
+    padding: 0.5rem;
+    background: #2d3748;
+    color: #e2e8f0;
+    border: none;
+}
+
+.form-input option:hover,
+.form-input option:focus,
+.form-input option:checked {
+    background: #4a5568;
+    color: #ffffff;
+}
+
 .form-hint {
     font-size: 0.8rem;
     color: #a0aec0;
