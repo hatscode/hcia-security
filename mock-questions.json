@@ -13,7 +13,7 @@
             "Theft -> Intrusion -> Spread -> Ransom"
           ],
           "correctAnswer": 0,
-          "explanation": "- (1) Use phishing and malicious emails to intrude networks. - (2) After a host is intruded, various attack methods are used to spread in the target network to increase the number of controlled hosts. - (3) Steal data from controlled hosts and upload the data to a server controlled by attackers. - (4) Ultimately, one or more ransomware viruses are run to paralyze the target network for profit."
+          "explanation": "- (1) Use phishing and malicious emails to intrude networks. - (2) After a host is intruded, various attack methods are used to spread in the target network to increase the number of controlled hosts. - (3) Steal data from controlled hosts and upload the data to a server controlled by attackers. - (4) Ultimately, one or more ransomware viruses are run to paralyze the target network for profit. "
         },
         {
           "question": "Hackers or organizations use distributed denial of service (DDoS) attacks to access enterprise databases without identity authentication, causing data leakage.",

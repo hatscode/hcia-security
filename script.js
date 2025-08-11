@@ -23,6 +23,13 @@ class ExamApp {
         this.selectedMock = 1;
         this.examInProgress = false;
         this.mockQuestions = null; // Will hold loaded questions from JSON
+        this.shuffledQuestions = null; // Will hold shuffled questions for current exam
+        this.questionMapping = []; // Maps shuffled index to original index
+        this.answerMapping = []; // Maps shuffled answer options to original indices
+        this.currentAttempt = null; // Stores the complete attempt state for review
+        this.tabSwitchCount = 0; // Track tab switches for anti-cheating
+        this.isTabActive = true; // Track if tab is currently active
+        this.uniqueSessionId = this.generateSessionId(); // Unique session identifier
         
         // Initialize the application
         this.init();
@@ -60,6 +67,7 @@ class ExamApp {
         this.setupEventListeners();
         this.setupPageProtection();
         this.disableTextSelection();
+        this.setupAntiCheating();
         this.showPage('home-page');
         
                 // Setup mobile optimizations
@@ -94,6 +102,288 @@ class ExamApp {
             // Fallback to show error message
             this.showErrorMessage('Failed to load exam questions. Please refresh the page and try again.');
         }
+    }
+
+    /**
+     * Generate a unique session ID for tracking
+     */
+    generateSessionId() {
+        return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    /**
+     * Create attempt state to preserve the exact exam experience for review
+     */
+    createAttemptState(shuffledQuestions) {
+        const attemptId = Date.now().toString() + Math.random().toString(36).substr(2, 9);
+        
+        this.currentAttempt = {
+            attemptId: attemptId,
+            timestamp: new Date().toISOString(),
+            selectedMock: this.selectedMock,
+            questions: shuffledQuestions.map((question, index) => ({
+                attemptIndex: index,
+                originalIndex: question.originalIndex,
+                question: question.question,
+                options: [...question.options], // Shuffled options as user saw them
+                correctAnswer: question.correctAnswer, // Mapped to shuffled positions
+                explanation: question.explanation,
+                userAnswer: null, // Will be filled when user answers
+                isMultipleChoice: this.isMultipleChoiceQuestion(question)
+            })),
+            userAnswers: new Array(shuffledQuestions.length).fill(null),
+            examStartTime: this.examStartTime,
+            examEndTime: null,
+            tabSwitchCount: 0
+        };
+        
+        console.log(`Created attempt state ${attemptId} with ${shuffledQuestions.length} questions`);
+        
+        // Debug: Log attempt state structure
+        console.log('Attempt state preview:', {
+            attemptId: this.currentAttempt.attemptId,
+            questionCount: this.currentAttempt.questions.length,
+            firstQuestion: this.currentAttempt.questions[0]?.question?.substring(0, 50) + '...',
+            firstQuestionOptions: this.currentAttempt.questions[0]?.options?.map((opt, i) => `${String.fromCharCode(65 + i)}. ${opt.substring(0, 30)}...`)
+        });
+        
+        return this.currentAttempt;
+    }
+
+    /**
+     * Update user answer in the attempt state
+     */
+    updateAttemptAnswer(questionIndex, userAnswer) {
+        if (this.currentAttempt && this.currentAttempt.questions[questionIndex]) {
+            this.currentAttempt.questions[questionIndex].userAnswer = userAnswer;
+            this.currentAttempt.userAnswers[questionIndex] = userAnswer;
+        }
+    }
+
+    /**
+     * Get questions for the current context (exam or review)
+     */
+    getCurrentMockQuestions() {
+        // If we have a completed attempt (for review), use that
+        if (this.currentAttempt && !this.examInProgress) {
+            return this.currentAttempt.questions;
+        }
+        
+        // If exam is in progress and we have shuffled questions, return those
+        if (this.examInProgress && this.shuffledQuestions) {
+            return this.shuffledQuestions;
+        }
+        
+        // Otherwise return original questions for display/counting
+        if (!this.mockQuestions) {
+            console.warn('Mock questions not loaded yet');
+            return [];
+        }
+        
+        const mockData = this.mockQuestions[this.selectedMock];
+        return mockData ? mockData.questions : [];
+    }
+
+    /**
+     * Shuffle array using Fisher-Yates algorithm
+     */
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    /**
+     * Shuffle questions and create mappings
+     */
+    shuffleQuestions(questions) {
+        console.log('Shuffling questions and answer options...');
+        
+        // Create array of indices for shuffling
+        const questionIndices = questions.map((_, index) => index);
+        const shuffledIndices = this.shuffleArray(questionIndices);
+        
+        // Create shuffled questions array and mapping
+        const shuffledQuestions = [];
+        this.questionMapping = [];
+        this.answerMapping = [];
+        
+        shuffledIndices.forEach((originalIndex, shuffledIndex) => {
+            const originalQuestion = questions[originalIndex];
+            
+            // Shuffle answer options for this question
+            const optionIndices = originalQuestion.options.map((_, index) => index);
+            const shuffledOptionIndices = this.shuffleArray(optionIndices);
+            
+            // Create shuffled options array
+            const shuffledOptions = shuffledOptionIndices.map(originalOptionIndex => 
+                originalQuestion.options[originalOptionIndex]
+            );
+            
+            // Map the correct answer(s) to the new shuffled positions
+            let shuffledCorrectAnswer;
+            if (Array.isArray(originalQuestion.correctAnswer)) {
+                // Multiple correct answers
+                shuffledCorrectAnswer = originalQuestion.correctAnswer.map(correctIndex => 
+                    shuffledOptionIndices.indexOf(correctIndex)
+                );
+            } else {
+                // Single correct answer
+                shuffledCorrectAnswer = shuffledOptionIndices.indexOf(originalQuestion.correctAnswer);
+            }
+            
+            // Create the shuffled question
+            const shuffledQuestion = {
+                ...originalQuestion,
+                options: shuffledOptions,
+                correctAnswer: shuffledCorrectAnswer,
+                originalIndex: originalIndex
+            };
+            
+            shuffledQuestions.push(shuffledQuestion);
+            this.questionMapping.push(originalIndex);
+            this.answerMapping.push(shuffledOptionIndices);
+        });
+        
+        console.log(`Shuffled ${shuffledQuestions.length} questions with answer options`);
+        return shuffledQuestions;
+    }
+
+    /**
+     * Setup tab switching detection for anti-cheating
+     */
+    setupAntiCheating() {
+        // Track when user switches away from the tab
+        document.addEventListener('visibilitychange', () => {
+            if (this.examInProgress) {
+                if (document.hidden) {
+                    this.isTabActive = false;
+                    this.tabSwitchCount++;
+                    console.warn(`Tab switch detected! Count: ${this.tabSwitchCount}`);
+                    
+                    // Show warning for first few switches
+                    if (this.tabSwitchCount <= 2) {
+                        this.showTabSwitchWarning();
+                    } else {
+                        // Auto-submit exam after multiple tab switches
+                        this.showTabSwitchSubmission();
+                        setTimeout(() => {
+                            this.submitExam();
+                        }, 3000);
+                    }
+                } else {
+                    this.isTabActive = true;
+                }
+            }
+        });
+
+        // Also detect focus/blur events
+        window.addEventListener('blur', () => {
+            if (this.examInProgress && this.isTabActive) {
+                this.tabSwitchCount++;
+                console.warn(`Window blur detected! Count: ${this.tabSwitchCount}`);
+                
+                if (this.tabSwitchCount <= 2) {
+                    this.showTabSwitchWarning();
+                } else {
+                    this.showTabSwitchSubmission();
+                    setTimeout(() => {
+                        this.submitExam();
+                    }, 3000);
+                }
+            }
+        });
+    }
+
+    /**
+     * Show tab switch warning
+     */
+    showTabSwitchWarning() {
+        const warningDiv = document.createElement('div');
+        warningDiv.className = 'tab-switch-warning';
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            z-index: 10000;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+        warningDiv.innerHTML = `
+            ⚠️ WARNING: Tab switching detected! (${this.tabSwitchCount}/3)<br>
+            <small>Multiple tab switches will result in automatic exam submission</small>
+        `;
+        document.body.appendChild(warningDiv);
+        
+        // Remove warning after 5 seconds
+        setTimeout(() => {
+            if (warningDiv.parentNode) {
+                warningDiv.parentNode.removeChild(warningDiv);
+            }
+        }, 5000);
+    }
+
+    /**
+     * Show tab switch submission notice
+     */
+    showTabSwitchSubmission() {
+        const submissionDiv = document.createElement('div');
+        submissionDiv.className = 'tab-switch-submission';
+        submissionDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            z-index: 10001;
+            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            max-width: 400px;
+        `;
+        submissionDiv.innerHTML = `
+            <div style="font-size: 2rem; margin-bottom: 1rem;">🚨</div>
+            <h3 style="margin: 0 0 1rem 0;">Exam Security Violation</h3>
+            <p style="margin: 0 0 1rem 0;">Multiple tab switches detected. Your exam will be automatically submitted for security reasons.</p>
+            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 6px; font-size: 0.9rem;">
+                Auto-submitting in 3 seconds...
+            </div>
+        `;
+        document.body.appendChild(submissionDiv);
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+        `;
+        document.body.appendChild(overlay);
+        
+        // Remove after submission
+        setTimeout(() => {
+            if (submissionDiv.parentNode) {
+                submissionDiv.parentNode.removeChild(submissionDiv);
+            }
+            if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+            }
+        }, 4000);
     }
 
     /**
@@ -335,19 +625,6 @@ class ExamApp {
     }
 
     /**
-     * Get questions for the currently selected mock
-     */
-    getCurrentMockQuestions() {
-        if (!this.mockQuestions) {
-            console.warn('Mock questions not loaded yet');
-            return [];
-        }
-        
-        const mockData = this.mockQuestions[this.selectedMock];
-        return mockData ? mockData.questions : [];
-    }
-
-    /**
      * Handle keyboard navigation for accessibility
      */
     handleKeyboardNavigation(event) {
@@ -439,8 +716,8 @@ class ExamApp {
             return;
         }
         
-        const currentQuestions = this.getCurrentMockQuestions();
-        if (currentQuestions.length === 0) {
+        const originalQuestions = this.getCurrentMockQuestions();
+        if (originalQuestions.length === 0) {
             this.showErrorMessage('No questions available for the selected mock exam.');
             return;
         }
@@ -448,18 +725,30 @@ class ExamApp {
         // Set exam in progress flag
         this.examInProgress = true;
         
+        // Reset tab switch counter
+        this.tabSwitchCount = 0;
+        this.isTabActive = true;
+        
         // Show loading screen briefly for better UX
         this.showLoadingScreen();
         
         setTimeout(() => {
+            // Shuffle questions and answers for this exam session
+            this.shuffledQuestions = this.shuffleQuestions(originalQuestions);
+            console.log('Exam prepared with shuffled questions and options');
+            
+            // Create attempt state to preserve exact exam experience
+            this.createAttemptState(this.shuffledQuestions);
+            
             // Reset exam state
             this.currentQuestionIndex = 0;
             this.userAnswers = [];
             this.timeRemaining = 5400; // Reset to 1.5 hours
             this.examStartTime = new Date();
+            this.currentAttempt.examStartTime = this.examStartTime;
             
-            // Initialize user answers array
-            this.userAnswers = new Array(currentQuestions.length).fill(null);
+            // Initialize user answers array based on shuffled questions
+            this.userAnswers = new Array(this.shuffledQuestions.length).fill(null);
             
             // Show question page and start timer
             this.showPage('question-page');
@@ -658,7 +947,7 @@ class ExamApp {
     }
 
     /**
-     * Check if a question is multiple choice
+     * Check if a question is multiple choice based on question text patterns
      */
     isMultipleChoiceQuestion(question) {
         if (!question || !question.question) {
@@ -666,12 +955,43 @@ class ExamApp {
         }
         
         const questionText = question.question.toLowerCase();
-        return questionText.includes('multiple choice') || 
-               questionText.includes('(select') || 
-               questionText.includes('select ') ||
-               questionText.includes('which of the following are') ||
-               questionText.includes('which of the following can be') ||
-               questionText.includes('which of the following statements are');
+        
+        // Check for explicit multiple choice indicators
+        const multipleChoicePatterns = [
+            /select.*\d+.*answers?/,
+            /multiple.*choice/,
+            /\(select.*answers?\)/,
+            /which.*of.*the.*following.*are.*correct/,
+            /which.*of.*the.*following.*statements.*are.*correct/,
+            /which.*of.*the.*following.*are.*true/,
+            /which.*of.*the.*following.*are.*false/,
+            /which.*of.*the.*following.*are.*components?/,
+            /which.*of.*the.*following.*are.*characteristics/,
+            /which.*of.*the.*following.*are.*filtering/,
+            /which.*of.*the.*following.*algorithms.*are/,
+            /which.*of.*the.*following.*ports.*are/,
+            /which.*of.*the.*following.*modes.*are/,
+            /which.*of.*the.*following.*technologies.*are/,
+            /which.*of.*the.*following.*protocols.*are/,
+            /which.*of.*the.*following.*vpns.*are/,
+            /which.*of.*the.*following.*authentication.*modes.*are/,
+            /which.*of.*the.*following.*backup.*modes.*are/,
+            /which.*of.*the.*following.*statements.*are/
+        ];
+        
+        // Check if question matches any multiple choice pattern
+        for (const pattern of multipleChoicePatterns) {
+            if (pattern.test(questionText)) {
+                return true;
+            }
+        }
+        
+        // Also check if correctAnswer is an array (indicates multiple correct answers)
+        if (Array.isArray(question.correctAnswer)) {
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -698,6 +1018,9 @@ class ExamApp {
             
             this.userAnswers[this.currentQuestionIndex] = currentAnswers;
             
+            // Update attempt state
+            this.updateAttemptAnswer(this.currentQuestionIndex, currentAnswers);
+            
             // Update UI to show selection
             document.querySelectorAll('.answer-option').forEach((option, index) => {
                 const isSelected = currentAnswers.includes(index);
@@ -711,6 +1034,9 @@ class ExamApp {
         } else {
             // Handle single choice selection
             this.userAnswers[this.currentQuestionIndex] = parseInt(answerIndex);
+            
+            // Update attempt state
+            this.updateAttemptAnswer(this.currentQuestionIndex, parseInt(answerIndex));
             
             // Update UI to show selection
             document.querySelectorAll('.answer-option').forEach((option, index) => {
@@ -802,6 +1128,19 @@ class ExamApp {
         this.stopTimer();
         this.examEndTime = new Date();
         
+        // Finalize attempt state
+        if (this.currentAttempt) {
+            this.currentAttempt.examEndTime = this.examEndTime;
+            this.currentAttempt.tabSwitchCount = this.tabSwitchCount;
+            // Store attempt in localStorage for persistence
+            try {
+                localStorage.setItem(`hcia-attempt-${this.currentAttempt.attemptId}`, JSON.stringify(this.currentAttempt));
+                console.log(`Attempt state saved: ${this.currentAttempt.attemptId}`);
+            } catch (error) {
+                console.warn('Failed to save attempt state:', error);
+            }
+        }
+        
         // Show loading screen
         this.showLoadingScreen();
         
@@ -869,6 +1208,19 @@ class ExamApp {
         this.stopTimer();
         this.examEndTime = new Date();
         
+        // Finalize attempt state
+        if (this.currentAttempt) {
+            this.currentAttempt.examEndTime = this.examEndTime;
+            this.currentAttempt.tabSwitchCount = this.tabSwitchCount;
+            // Store attempt in localStorage for persistence
+            try {
+                localStorage.setItem(`hcia-attempt-${this.currentAttempt.attemptId}`, JSON.stringify(this.currentAttempt));
+                console.log(`Attempt state saved (early exit): ${this.currentAttempt.attemptId}`);
+            } catch (error) {
+                console.warn('Failed to save attempt state:', error);
+            }
+        }
+        
         // Show loading screen
         this.showLoadingScreen();
         
@@ -884,15 +1236,16 @@ class ExamApp {
     }
 
     /**
-     * Calculate exam results and update the results page
+     * Calculate exam results and update the results page with strict validation
      */
     calculateResults() {
-        console.log('Calculating results...');
+        console.log('Calculating results with strict validation...');
         
         const currentQuestions = this.getCurrentMockQuestions();
         let correctAnswers = 0;
         let incorrectAnswers = 0;
         let unansweredQuestions = 0;
+        let partiallyCorrectAnswers = 0; // Track partially correct for reporting
         
         // Count correct, incorrect, and unanswered questions
         currentQuestions.forEach((question, index) => {
@@ -902,31 +1255,57 @@ class ExamApp {
             if (userAnswer === null || userAnswer === undefined || 
                 (Array.isArray(userAnswer) && userAnswer.length === 0)) {
                 unansweredQuestions++;
-            } else {
-                let isCorrect = false;
+                return;
+            }
+            
+            let isCorrect = false;
+            
+            if (isMultipleChoice) {
+                // Strict validation for multiple choice questions
+                const correctAnswerArray = Array.isArray(question.correctAnswer) ? 
+                    question.correctAnswer : [question.correctAnswer];
                 
-                if (isMultipleChoice) {
-                    // For multiple choice, check if the user selected all correct answers
-                    // Note: You may need to adjust this logic based on how correctAnswer is stored
-                    // For now, assuming correctAnswer is an array for multiple choice questions
-                    const correctAnswerArray = Array.isArray(question.correctAnswer) ? 
-                        question.correctAnswer : [question.correctAnswer];
+                if (Array.isArray(userAnswer)) {
+                    // STRICT: All correct answers must be selected, no incorrect answers allowed
+                    const sortedCorrect = [...correctAnswerArray].sort((a, b) => a - b);
+                    const sortedUser = [...userAnswer].sort((a, b) => a - b);
                     
-                    if (Array.isArray(userAnswer)) {
-                        // Check if arrays are equal (same elements)
-                        isCorrect = correctAnswerArray.length === userAnswer.length &&
-                                   correctAnswerArray.every(ans => userAnswer.includes(ans));
+                    // Check if arrays are exactly equal
+                    isCorrect = sortedCorrect.length === sortedUser.length &&
+                               sortedCorrect.every((ans, i) => ans === sortedUser[i]);
+                    
+                    // For debugging and feedback: check if partially correct
+                    if (!isCorrect) {
+                        const hasCorrectAnswers = correctAnswerArray.some(ans => userAnswer.includes(ans));
+                        const hasIncorrectAnswers = userAnswer.some(ans => !correctAnswerArray.includes(ans));
+                        const missingCorrectAnswers = correctAnswerArray.some(ans => !userAnswer.includes(ans));
+                        
+                        if (hasCorrectAnswers && (hasIncorrectAnswers || missingCorrectAnswers)) {
+                            partiallyCorrectAnswers++;
+                        }
                     }
                 } else {
-                    // Single choice
+                    // User provided single answer but question requires multiple
+                    isCorrect = false;
+                    if (correctAnswerArray.includes(userAnswer)) {
+                        partiallyCorrectAnswers++;
+                    }
+                }
+            } else {
+                // Single choice validation
+                if (Array.isArray(question.correctAnswer)) {
+                    // Question has multiple correct answers but user can only select one
+                    isCorrect = question.correctAnswer.includes(userAnswer);
+                } else {
+                    // Standard single choice
                     isCorrect = userAnswer === question.correctAnswer;
                 }
-                
-                if (isCorrect) {
-                    correctAnswers++;
-                } else {
-                    incorrectAnswers++;
-                }
+            }
+            
+            if (isCorrect) {
+                correctAnswers++;
+            } else {
+                incorrectAnswers++;
             }
         });
         
@@ -934,13 +1313,14 @@ class ExamApp {
         const answeredQuestions = correctAnswers + incorrectAnswers;
         const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
         
-        console.log(`Results: ${correctAnswers}/${totalQuestions} correct (${percentage}%)`);
+        console.log(`Results (Strict Validation): ${correctAnswers}/${totalQuestions} correct (${percentage}%)`);
         console.log(`Answered: ${answeredQuestions}/${totalQuestions}, Unanswered: ${unansweredQuestions}`);
+        console.log(`Partially Correct (but marked wrong): ${partiallyCorrectAnswers}`);
         
         // Update results display
         this.updateResultsDisplay(correctAnswers, incorrectAnswers, totalQuestions, percentage, unansweredQuestions);
         
-        // Generate detailed answers
+        // Generate detailed answers with enhanced information
         this.generateDetailedAnswers();
     }
 
@@ -1031,7 +1411,7 @@ class ExamApp {
     }
 
     /**
-     * Generate detailed answers for review
+     * Generate enhanced detailed answers for comprehensive review
      */
     generateDetailedAnswers() {
         const answerReviewList = document.getElementById('answer-review-list');
@@ -1040,35 +1420,99 @@ class ExamApp {
         const currentQuestions = this.getCurrentMockQuestions();
         answerReviewList.innerHTML = '';
         
+        // Add navigation and summary header
+        const summaryHeader = document.createElement('div');
+        summaryHeader.className = 'review-summary';
+        summaryHeader.innerHTML = `
+            <div class="review-navigation">
+                <h3>📋 Comprehensive Question Review</h3>
+                <div class="review-stats">
+                    <span class="stat correct-stat">✅ Correct: ${this.userAnswers.filter((answer, i) => this.isAnswerCorrect(answer, currentQuestions[i])).length}</span>
+                    <span class="stat incorrect-stat">❌ Incorrect: ${this.userAnswers.filter((answer, i) => answer !== null && !this.isAnswerCorrect(answer, currentQuestions[i])).length}</span>
+                    <span class="stat unanswered-stat">❓ Unanswered: ${this.userAnswers.filter(answer => answer === null || (Array.isArray(answer) && answer.length === 0)).length}</span>
+                </div>
+                <div class="review-filters">
+                    <button class="filter-btn active" data-filter="all">All Questions</button>
+                    <button class="filter-btn" data-filter="incorrect">Incorrect Only</button>
+                    <button class="filter-btn" data-filter="correct">Correct Only</button>
+                    <button class="filter-btn" data-filter="unanswered">Unanswered Only</button>
+                </div>
+            </div>
+        `;
+        answerReviewList.appendChild(summaryHeader);
+        
+        // Add filter functionality
+        summaryHeader.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active button
+                summaryHeader.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                // Filter questions
+                const filter = e.target.dataset.filter;
+                this.filterReviewQuestions(filter);
+            });
+        });
+        
         currentQuestions.forEach((question, index) => {
             const reviewItem = document.createElement('div');
             reviewItem.className = 'answer-review-item';
+            reviewItem.dataset.questionIndex = index;
             
             const userAnswer = this.userAnswers[index];
             const correctAnswer = question.correctAnswer;
             const isMultipleChoice = this.isMultipleChoiceQuestion(question);
+            const isCorrect = this.isAnswerCorrect(userAnswer, question);
+            const isUnanswered = userAnswer === null || userAnswer === undefined || 
+                                (Array.isArray(userAnswer) && userAnswer.length === 0);
             
-            let isCorrect = false;
+            // Set data attributes for filtering
+            reviewItem.dataset.status = isUnanswered ? 'unanswered' : (isCorrect ? 'correct' : 'incorrect');
+            
+            // Build question type indicator
+            let questionTypeInfo = '';
             if (isMultipleChoice) {
-                const correctAnswerArray = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
-                if (Array.isArray(userAnswer)) {
-                    isCorrect = correctAnswerArray.length === userAnswer.length &&
-                               correctAnswerArray.every(ans => userAnswer.includes(ans));
-                }
+                const correctCount = Array.isArray(correctAnswer) ? correctAnswer.length : 1;
+                questionTypeInfo = `<span class="question-type-badge multiple">Multiple Choice (${correctCount} correct)</span>`;
             } else {
-                isCorrect = userAnswer === correctAnswer;
+                questionTypeInfo = `<span class="question-type-badge single">Single Choice</span>`;
             }
             
+            // Build user selection summary
+            let userSelectionSummary = '';
+            if (isUnanswered) {
+                userSelectionSummary = '<div class="user-selection-summary unanswered">📝 <strong>Your Answer:</strong> Not answered</div>';
+            } else {
+                let selectedOptions = [];
+                if (isMultipleChoice && Array.isArray(userAnswer)) {
+                    selectedOptions = userAnswer.map(i => `${String.fromCharCode(65 + i)}. ${question.options[i]}`);
+                    userSelectionSummary = `<div class="user-selection-summary ${isCorrect ? 'correct' : 'incorrect'}">📝 <strong>Your Answer(s):</strong> ${selectedOptions.join(', ')}</div>`;
+                } else {
+                    const selectedLabel = String.fromCharCode(65 + userAnswer);
+                    userSelectionSummary = `<div class="user-selection-summary ${isCorrect ? 'correct' : 'incorrect'}">📝 <strong>Your Answer:</strong> ${selectedLabel}. ${question.options[userAnswer]}</div>`;
+                }
+            }
+
             let reviewHTML = `
-                <div class="review-question">
-                    <strong>Question ${index + 1} ${isMultipleChoice ? '(Multiple Choice)' : ''}:</strong> ${question.question}
+                <div class="review-question-header">
+                    <div class="question-number">Question ${index + 1}</div>
+                    ${questionTypeInfo}
+                    <div class="question-difficulty">
+                        ${this.getQuestionDifficulty(question)}
+                    </div>
                 </div>
+                <div class="review-question">
+                    <strong>${question.question}</strong>
+                </div>
+                ${userSelectionSummary}
                 <div class="review-answers">
             `;
             
             question.options.forEach((option, optionIndex) => {
                 let answerClass = 'not-selected';
                 let prefix = '';
+                let explanation = '';
+                let optionLabel = String.fromCharCode(65 + optionIndex); // A, B, C, D...
                 
                 const isCorrectOption = isMultipleChoice ? 
                     (Array.isArray(correctAnswer) ? correctAnswer.includes(optionIndex) : correctAnswer === optionIndex) :
@@ -1078,48 +1522,101 @@ class ExamApp {
                     (Array.isArray(userAnswer) && userAnswer.includes(optionIndex)) :
                     (optionIndex === userAnswer);
                 
-                if (isCorrectOption) {
-                    answerClass = 'correct';
-                    prefix = '✓ ';
-                } else if (isUserSelected && !isCorrectOption) {
-                    answerClass = 'user-incorrect';
-                    prefix = '✗ ';
-                } else if (userAnswer === null || userAnswer === undefined || 
-                          (Array.isArray(userAnswer) && userAnswer.length === 0)) {
-                    answerClass = 'unanswered';
-                    if (isCorrectOption) {
-                        answerClass = 'correct';
-                        prefix = '✓ ';
-                    }
-                } else if (isUserSelected) {
-                    prefix = '→ ';
+                if (isCorrectOption && isUserSelected) {
+                    answerClass = 'correct-selected';
+                    prefix = `✅ ${optionLabel}. `;
+                    explanation = '<small class="answer-explanation">✓ You selected this - CORRECT!</small>';
+                } else if (isCorrectOption && !isUserSelected) {
+                    answerClass = 'correct-not-selected';
+                    prefix = `✓ ${optionLabel}. `;
+                    explanation = '<small class="answer-explanation">Correct answer (you did not select this)</small>';
+                } else if (!isCorrectOption && isUserSelected) {
+                    answerClass = 'incorrect-selected';
+                    prefix = `❌ ${optionLabel}. `;
+                    explanation = '<small class="answer-explanation">✗ You selected this - INCORRECT</small>';
+                } else {
+                    answerClass = 'not-selected';
+                    prefix = `${optionLabel}. `;
+                }
+                
+                if (isUnanswered && isCorrectOption) {
+                    answerClass = 'correct-not-answered';
+                    prefix = `✓ ${optionLabel}. `;
+                    explanation = '<small class="answer-explanation">Correct answer (not answered)</small>';
                 }
                 
                 reviewHTML += `
                     <div class="review-answer ${answerClass}">
-                        ${prefix}${option}
+                        <div class="answer-content">
+                            ${prefix}${option}
+                        </div>
+                        ${explanation}
                     </div>
                 `;
             });
             
-            // Add status indicator
+            // Add comprehensive status and feedback
             let statusHTML = '';
-            if (userAnswer === null || userAnswer === undefined || 
-                (Array.isArray(userAnswer) && userAnswer.length === 0)) {
+            let feedbackHTML = '';
+            
+            if (isUnanswered) {
                 statusHTML = '<div class="review-status unanswered">❓ Not Answered</div>';
+                feedbackHTML = '<div class="review-feedback unanswered">You did not answer this question. Review the explanation below to understand the correct answer.</div>';
             } else if (isCorrect) {
                 statusHTML = '<div class="review-status correct">✅ Correct</div>';
+                feedbackHTML = '<div class="review-feedback correct">Excellent! You selected the correct answer(s).</div>';
             } else {
                 statusHTML = '<div class="review-status incorrect">❌ Incorrect</div>';
+                if (isMultipleChoice) {
+                    const correctAnswerArray = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+                    const userAnswerArray = Array.isArray(userAnswer) ? userAnswer : [userAnswer];
+                    const missingAnswers = correctAnswerArray.filter(ans => !userAnswerArray.includes(ans));
+                    const extraAnswers = userAnswerArray.filter(ans => !correctAnswerArray.includes(ans));
+                    
+                    let details = [];
+                    if (missingAnswers.length > 0) {
+                        const missingLabels = missingAnswers.map(i => `${String.fromCharCode(65 + i)}. ${question.options[i]}`);
+                        details.push(`Missing correct answer(s): ${missingLabels.join(', ')}`);
+                    }
+                    if (extraAnswers.length > 0) {
+                        const extraLabels = extraAnswers.map(i => `${String.fromCharCode(65 + i)}. ${question.options[i]}`);
+                        details.push(`Incorrectly selected: ${extraLabels.join(', ')}`);
+                    }
+                    
+                    feedbackHTML = `<div class="review-feedback incorrect">For multiple choice questions, you must select ALL correct answers and NO incorrect answers. ${details.join('. ')}</div>`;
+                } else {
+                    const userLabel = String.fromCharCode(65 + userAnswer);
+                    const correctLabel = String.fromCharCode(65 + correctAnswer);
+                    feedbackHTML = `<div class="review-feedback incorrect">You selected "${userLabel}. ${question.options[userAnswer]}" but the correct answer is "${correctLabel}. ${question.options[correctAnswer]}".</div>`;
+                }
             }
             
-            reviewHTML += statusHTML;
+            reviewHTML += statusHTML + feedbackHTML;
             
             // Add explanation if available
             if (question.explanation) {
                 reviewHTML += `
                     <div class="review-explanation">
-                        <strong>Explanation:</strong> ${question.explanation}
+                        <div class="explanation-header">
+                            <strong>📚 Explanation & Reference:</strong>
+                        </div>
+                        <div class="explanation-content">
+                            ${question.explanation}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add study recommendations
+            if (!isCorrect || isUnanswered) {
+                reviewHTML += `
+                    <div class="study-recommendations">
+                        <div class="recommendation-header">
+                            <strong>📖 Study Recommendations:</strong>
+                        </div>
+                        <div class="recommendation-content">
+                            ${this.getStudyRecommendations(question)}
+                        </div>
                     </div>
                 `;
             }
@@ -1128,6 +1625,108 @@ class ExamApp {
             reviewItem.innerHTML = reviewHTML;
             answerReviewList.appendChild(reviewItem);
         });
+    }
+
+    /**
+     * Check if a user's answer is correct using strict validation
+     */
+    isAnswerCorrect(userAnswer, question) {
+        const isMultipleChoice = this.isMultipleChoiceQuestion(question);
+        
+        if (userAnswer === null || userAnswer === undefined || 
+            (Array.isArray(userAnswer) && userAnswer.length === 0)) {
+            return false;
+        }
+        
+        if (isMultipleChoice) {
+            const correctAnswerArray = Array.isArray(question.correctAnswer) ? 
+                question.correctAnswer : [question.correctAnswer];
+            
+            if (Array.isArray(userAnswer)) {
+                const sortedCorrect = [...correctAnswerArray].sort((a, b) => a - b);
+                const sortedUser = [...userAnswer].sort((a, b) => a - b);
+                
+                return sortedCorrect.length === sortedUser.length &&
+                       sortedCorrect.every((ans, i) => ans === sortedUser[i]);
+            }
+            return false;
+        } else {
+            return userAnswer === question.correctAnswer;
+        }
+    }
+
+    /**
+     * Filter review questions based on status
+     */
+    filterReviewQuestions(filter) {
+        const reviewItems = document.querySelectorAll('.answer-review-item[data-question-index]');
+        
+        reviewItems.forEach(item => {
+            const status = item.dataset.status;
+            let show = false;
+            
+            switch (filter) {
+                case 'all':
+                    show = true;
+                    break;
+                case 'correct':
+                    show = status === 'correct';
+                    break;
+                case 'incorrect':
+                    show = status === 'incorrect';
+                    break;
+                case 'unanswered':
+                    show = status === 'unanswered';
+                    break;
+            }
+            
+            item.style.display = show ? 'block' : 'none';
+        });
+    }
+
+    /**
+     * Get question difficulty based on content
+     */
+    getQuestionDifficulty(question) {
+        const text = question.question.toLowerCase();
+        
+        // Advanced concepts
+        if (text.includes('ipsec') || text.includes('pki') || text.includes('certificate') || 
+            text.includes('encryption') || text.includes('vpn') || text.includes('radius')) {
+            return '<span class="difficulty-badge advanced">🔴 Advanced</span>';
+        }
+        
+        // Intermediate concepts
+        if (text.includes('firewall') || text.includes('nat') || text.includes('session') || 
+            text.includes('protocol') || text.includes('authentication')) {
+            return '<span class="difficulty-badge intermediate">🟡 Intermediate</span>';
+        }
+        
+        // Basic concepts
+        return '<span class="difficulty-badge basic">🟢 Basic</span>';
+    }
+
+    /**
+     * Get study recommendations based on question content
+     */
+    getStudyRecommendations(question) {
+        const text = question.question.toLowerCase();
+        
+        if (text.includes('firewall')) {
+            return 'Review firewall fundamentals, packet filtering, and stateful inspection concepts.';
+        } else if (text.includes('vpn') || text.includes('ipsec')) {
+            return 'Study VPN technologies, IPSec protocols, and tunnel establishment procedures.';
+        } else if (text.includes('encryption') || text.includes('cryptography')) {
+            return 'Focus on cryptographic algorithms, key management, and encryption standards.';
+        } else if (text.includes('authentication') || text.includes('radius')) {
+            return 'Review AAA concepts, authentication protocols, and user management systems.';
+        } else if (text.includes('network') || text.includes('tcp') || text.includes('ip')) {
+            return 'Study network fundamentals, TCP/IP protocol stack, and network communications.';
+        } else if (text.includes('attack') || text.includes('malware') || text.includes('security')) {
+            return 'Review common attack vectors, security threats, and defensive strategies.';
+        } else {
+            return 'Review the relevant chapter in your Huawei Security certification study materials.';
+        }
     }
 
     /**
@@ -1166,6 +1765,8 @@ class ExamApp {
         this.examStartTime = null;
         this.examEndTime = null;
         this.examInProgress = false;
+        this.shuffledQuestions = null;
+        this.currentAttempt = null; // Clear attempt state for new exam
         
         // Stop any running timer
         this.stopTimer();
@@ -1269,22 +1870,27 @@ class ExamApp {
     }
 
     /**
-     * Submit feedback
+     * Submit feedback to Google Sheets
      */
-    submitFeedback() {
+    async submitFeedback() {
         const feedbackType = document.getElementById('feedback-type');
         const feedbackMessage = document.getElementById('feedback-message-text');
         const activeStars = document.querySelectorAll('.star.active');
 
         const feedback = {
+            sessionId: this.uniqueSessionId,
             type: feedbackType?.value || 'suggestion',
             rating: activeStars.length,
             message: feedbackMessage?.value || '',
             timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
             examData: {
                 selectedMock: this.selectedMock,
                 questionsAnswered: this.userAnswers.filter(a => a !== null).length,
-                totalQuestions: this.getCurrentMockQuestions().length
+                totalQuestions: this.getCurrentMockQuestions().length,
+                tabSwitchCount: this.tabSwitchCount,
+                examDuration: this.examStartTime ? 
+                    Math.round((new Date() - this.examStartTime) / 1000) : 0
             }
         };
 
@@ -1294,29 +1900,100 @@ class ExamApp {
             return;
         }
 
-        // Simulate feedback submission (in a real app, you'd send this to a server)
-        console.log('Feedback submitted:', feedback);
+        // Show loading state
+        const submitBtn = document.getElementById('submit-feedback-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+
+        try {
+            // Submit to Google Sheets using Apps Script Web App
+            await this.submitToGoogleSheets(feedback);
+            
+            console.log('Feedback submitted successfully:', feedback);
+            this.showFeedbackSuccess();
+            
+            // Hide modal after short delay
+            setTimeout(() => {
+                this.hideFeedbackModal();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Failed to submit feedback:', error);
+            
+            // Fallback: Store locally and show alternative success
+            this.storeFeedbackLocally(feedback);
+            this.showFeedbackSuccess('Your feedback has been saved locally. Thank you!');
+            
+            setTimeout(() => {
+                this.hideFeedbackModal();
+            }, 2000);
+        } finally {
+            // Restore button state
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    /**
+     * Submit feedback to Google Sheets via Apps Script
+     */
+    async submitToGoogleSheets(feedback) {
+        // Google Apps Script Web App URL (this would be configured by the administrator)
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
         
-        // Show success message
-        this.showFeedbackSuccess();
+        // Note: In a real implementation, you would:
+        // 1. Create a Google Apps Script that accepts POST requests
+        // 2. Configure it to write to a Google Sheet
+        // 3. Replace YOUR_SCRIPT_ID with the actual script ID
         
-        // Hide modal after short delay
-        setTimeout(() => {
-            this.hideFeedbackModal();
-        }, 2000);
+        const response = await fetch(GOOGLE_SHEETS_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Required for Apps Script
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(feedback)
+        });
+        
+        // Note: Due to no-cors mode, we can't check response status
+        // The request will be sent but we won't know if it succeeded
+        console.log('Feedback sent to Google Sheets (no-cors mode)');
+    }
+
+    /**
+     * Store feedback locally as fallback
+     */
+    storeFeedbackLocally(feedback) {
+        try {
+            const storedFeedback = JSON.parse(localStorage.getItem('hcia-feedback') || '[]');
+            storedFeedback.push(feedback);
+            
+            // Keep only last 50 feedback entries
+            if (storedFeedback.length > 50) {
+                storedFeedback.splice(0, storedFeedback.length - 50);
+            }
+            
+            localStorage.setItem('hcia-feedback', JSON.stringify(storedFeedback));
+            console.log('Feedback stored locally');
+        } catch (error) {
+            console.error('Failed to store feedback locally:', error);
+        }
     }
 
     /**
      * Show feedback success message
      */
-    showFeedbackSuccess() {
+    showFeedbackSuccess(customMessage = null) {
         const feedbackBody = document.querySelector('.feedback-body');
         if (feedbackBody) {
+            const message = customMessage || 'Your feedback has been received and will help improve the application.';
+            
             feedbackBody.innerHTML = `
                 <div class="feedback-success">
                     <div class="success-icon">✅</div>
                     <h3>Thank You!</h3>
-                    <p>Your feedback has been received and will help improve the application.</p>
+                    <p>${message}</p>
                     <p>You can also reach out on social media:</p>
                     <div class="success-social-links">
                         <a href="https://github.com/stilla1ex" target="_blank" class="social-link github">
