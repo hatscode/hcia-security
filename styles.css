@@ -87,10 +87,293 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Import Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Modern Header Design */
+.modern-header {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 0.875rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 6px 24px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.modern-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        #ff6b6b 0%, 
+        #4ecdc4 25%, 
+        #45b7d1 50%, 
+        #96ceb4 75%, 
+        #feca57 100%);
+    opacity: 0.8;
+}
+
+.modern-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        transparent 70%);
+    animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) rotate(180deg); opacity: 0.1; }
+}
+
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    position: relative;
+    z-index: 1;
+}
+
+.brand-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 
+        0 4px 16px rgba(102, 126, 234, 0.35),
+        0 2px 6px rgba(0, 0, 0, 0.15);
+    position: relative;
+    animation: iconPulse 3s ease-in-out infinite;
+}
+
+.brand-icon::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+    border-radius: 14px;
+    z-index: -1;
+    animation: borderRotate 3s linear infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes borderRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.brand-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-title h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.brand-company {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.brand-certification {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    opacity: 0.95;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+
+.brand-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    margin-top: 0.1rem;
+    letter-spacing: 0.02em;
+}
+
+.certification-badge {
+    background: linear-gradient(135deg, 
+        rgba(255, 215, 0, 0.9) 0%, 
+        rgba(255, 165, 0, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    padding: 0.4rem 0.875rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 0.75rem;
+    box-shadow: 
+        0 3px 12px rgba(255, 215, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+    0% { 
+        box-shadow: 
+            0 4px 16px rgba(255, 215, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    100% { 
+        box-shadow: 
+            0 6px 24px rgba(255, 215, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+}
+
+.badge-icon {
+    font-size: 0.8rem;
+    animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+.header-decorations {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.decoration-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    animation: dotPulse 2s ease-in-out infinite;
+}
+
+.decoration-dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.decoration-dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+/* Responsive Header Design */
+@media (max-width: 768px) {
+    .modern-header {
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border-radius: 12px;
+    }
+    
+    .brand-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.625rem;
+    }
+    
+    .brand-content {
+        flex-direction: column;
+        gap: 0.625rem;
+        align-items: center;
+    }
+    
+    .brand-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .brand-title h1 {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+    
+    .brand-certification {
+        font-size: 1.25rem;
+    }
+    
+    .certification-badge {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-header {
+        padding: 0.625rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .brand-title h1 {
+        font-size: 1.125rem;
+    }
+    
+    .brand-certification {
+        font-size: 1.125rem;
+    }
+}
+
 /* Home Page Styles */
 .header {
     text-align: center;
     padding: 1rem 0;
+    display: none; /* Hidden in favor of modern-header */
 }
 
 .logo h1 {
@@ -2533,19 +2816,33 @@ body {
     font-weight: 500;
     border: none;
     cursor: pointer;
+    min-width: 120px;
+    justify-content: center;
+    text-align: center;
 }
 
 .social-link:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
+    color: white;
 }
 
+/* Specific hover colors for brand recognition */
 .social-link.github:hover {
-    background: #333;
+    background: rgba(88, 96, 105, 0.8);
 }
 
 .social-link.twitter:hover {
-    background: #1da1f2;
+    background: rgba(29, 161, 242, 0.8);
+}
+
+.social-link.github-star:hover {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+}
+
+.social-link.feedback:hover {
+    background: rgba(66, 153, 225, 0.8);
 }
 
 .footer-links {
@@ -2633,8 +2930,11 @@ body {
     }
     
     .social-link {
-        padding: 0.5rem 0.75rem;
+        padding: 0.6rem 0.8rem;
         font-size: 0.85rem;
+        min-width: 100px;
+        flex: 1;
+        max-width: 140px;
     }
     
     .footer-links {
@@ -2697,12 +2997,12 @@ body {
     }
     
     .social-link {
-        padding: 0.4rem 0.6rem;
+        padding: 0.5rem 0.7rem;
         font-size: 0.8rem;
         width: 100%;
         max-width: 200px;
+        min-width: auto;
         justify-content: center;
-        text-align: center;
     }
     
     .footer-links {
