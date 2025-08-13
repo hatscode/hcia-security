@@ -2764,212 +2764,188 @@ body {
     font-size: 0.8rem;
 }
 
-/* Footer Styles */
+/* Compact Modern Footer Styles */
 .app-footer {
-    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-    color: white;
-    padding: 2rem 0 1rem;
-    margin-top: 2rem;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);
+    color: #e2e8f0;
+    margin-top: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99, 179, 237, 0.5), transparent);
 }
 
 .footer-content {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: flex-start;
     gap: 2rem;
-    margin-bottom: 2rem;
+    padding: 2rem 0;
     flex-wrap: wrap;
 }
 
-.footer-section {
+/* Brand Section */
+.footer-brand {
     flex: 1;
-    min-width: 200px;
+    min-width: 250px;
 }
 
-.footer-section h4 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #e2e8f0;
-}
-
-.footer-section p {
-    color: #a0aec0;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-}
-
-.social-links, .support-links {
+.footer-logo {
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-/* Ensure uniform height for support section buttons */
-.support-links {
-    align-items: stretch;
-}
-
-.support-links .social-link {
-    height: 44px;
-    min-height: 44px;
-    flex: 1;
+.footer-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #4299e1, #63b3ed);
     border-radius: 8px;
     color: white;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    min-width: 140px;
-    min-height: 44px;
-    justify-content: center;
-    text-align: center;
-    flex: 1;
-    max-width: 160px;
+    flex-shrink: 0;
 }
 
-.social-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-    color: white;
+.footer-brand-text h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin: 0;
+    line-height: 1.2;
 }
 
-/* Specific hover colors for brand recognition */
-.social-link.github:hover {
-    background: rgba(88, 96, 105, 0.8);
+.footer-brand-text span {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    font-weight: 400;
 }
 
-.social-link.twitter:hover {
-    background: rgba(29, 161, 242, 0.8);
-}
-
-.social-link.github-star:hover {
-    background: rgba(255, 215, 0, 0.2);
-    color: #ffd700;
-}
-
-.social-link.feedback:hover {
-    background: rgba(66, 153, 225, 0.8);
-}
-
+/* Links Section */
 .footer-links {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.footer-link-btn {
-    background: none;
-    border: none;
-    color: #4299e1;
-    cursor: pointer;
-    padding: 0.5rem 0;
-    text-align: left;
-    font-size: 0.9rem;
-    transition: color 0.3s ease;
-}
-
-.footer-link-btn:hover {
-    color: #63b3ed;
+    gap: 1rem;
+    align-items: center;
 }
 
 .footer-link {
-    color: #4299e1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #a0aec0;
     text-decoration: none;
-    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+    font-weight: 500;
     font-size: 0.9rem;
-    transition: color 0.3s ease;
+    white-space: nowrap;
 }
 
 .footer-link:hover {
-    color: #63b3ed;
+    background: rgba(66, 153, 225, 0.15);
+    border-color: rgba(66, 153, 225, 0.3);
+    color: #e2e8f0;
+    transform: translateY(-1px);
 }
 
-.footer-bottom {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid #4a5568;
+.footer-link svg {
+    flex-shrink: 0;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.footer-link:hover svg {
+    opacity: 1;
+}
+
+/* Footer feedback button styling */
+.footer-feedback-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Copyright Section */
+.footer-copyright {
     color: #a0aec0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+}
+
+.creator-name {
+    color: #4299e1;
+    font-weight: 600;
 }
 
 /* Responsive Footer */
 @media (max-width: 768px) {
     .app-footer {
-        padding: 1.5rem 0 1rem;
-        margin-top: 1.5rem;
-        text-align: center;
+        margin-top: 2rem;
     }
     
     .footer-content {
         flex-direction: column;
-        gap: 1rem;
         text-align: center;
-        margin-bottom: 1rem;
-        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem 0;
     }
     
-    .footer-section {
+    .footer-brand {
         min-width: auto;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
     
-    .footer-section h4 {
-        font-size: 1.1rem;
-        margin-bottom: 0.75rem;
-        text-align: center;
-    }
-    
-    .footer-section p {
-        font-size: 0.9rem;
-        margin-bottom: 0.75rem;
-        text-align: center;
-    }
-    
-    .social-links, .support-links {
+    .footer-logo {
         justify-content: center;
-        gap: 0.5rem;
-        display: flex;
-        flex-wrap: wrap;
-    }
-    
-    .social-link {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
-        min-width: 100px;
-        flex: 1;
-        max-width: 140px;
     }
     
     .footer-links {
-        align-items: center;
-        text-align: center;
+        flex-wrap: wrap;
+        justify-content: center;
     }
     
-    .footer-link-btn {
-        text-align: center;
+    .footer-link {
+        font-size: 0.85rem;
+        padding: 0.45rem 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-content {
+        padding: 1.25rem 0;
     }
     
-    .footer-bottom {
-        padding-top: 1rem;
-        font-size: 0.8rem;
-        text-align: center;
+    .footer-icon {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .footer-brand-text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+    
+    .footer-link {
+        justify-content: center;
+        width: 100%;
+        max-width: 200px;
     }
 }
 
