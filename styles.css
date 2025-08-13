@@ -393,7 +393,7 @@ body {
     padding: 2rem;
     text-align: center;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-    max-width: 600px;
+    max-width: 700px;
     width: 100%;
     border: 1px solid #4a5568;
 }
@@ -683,11 +683,11 @@ body {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     max-height: calc(100vh - 100px);
     height: auto;
-    min-height: calc(100vh - 100px);
+    min-height: calc(90vh - 100px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-width: 650px;
+    max-width: 750px;
     margin: 0 auto;
     border: 1px solid #4a5568;
 }
