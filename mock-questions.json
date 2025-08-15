@@ -2051,7 +2051,7 @@
             "Interzone security policies are automatically sorted by ID. If the position of a policy changes, the ID of the policy changes accordingly."
           ],
           "correctAnswer": 1,
-          "explanation": "The correct answer is interzone security policies are matched sequentially from the top down."
+          "explanation": "Firewall policies are evaluated top-down until a match is found."
         },
         {
           "question": "Which of the following statements is incorrect about the RADIUS protocol?",
@@ -2062,7 +2062,7 @@
             "It supports authorization of configuration commands."
           ],
           "correctAnswer": 3,
-          "explanation": "The incorrect answer is It supports authorization of configuration commands."
+          "explanation": "RADIUS does not support command authorization; TACACS+ does."
         },
         {
           "question": "Huawei Redundancy Protocol (HRP) is used to synchronize data such as the key configurations and connection status of the active firewall to the standby firewall. Which of the following data is beyond the synchronization scope?",
@@ -2073,7 +2073,7 @@
             "NAT policies"
           ],
           "correctAnswer": 0,
-          "explanation": "The correct answer is Routing table."
+          "explanation": "HRP does not synchronize routing tables; they are dynamically learned."
         },
         {
           "question": "Which of the following messages can provide error information and IP packet processing information for source ends?",
@@ -2084,7 +2084,7 @@
             "ICMP"
           ],
           "correctAnswer": 3,
-          "explanation": "The correct answer is ICMP."
+          "explanation": "ICMP (e.g., ping replies, TTL exceeded) reports network-layer errors."
         },
         {
           "question": "If packet loss occurs when hosts A and B communicate with each other through TCP, how does TCP ensure reliability?",
@@ -2095,7 +2095,7 @@
             "The Option field in TCP packets is used to ensure reliability of host A and host B."
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is the ACK field in TCP packets is used to instruct host A to retransmit packets."
+          "explanation": "TCP uses ACKs to request retransmission of lost packets."
         },
         {
           "question": "Which one of the following parts is not included in a digital certificate?",
