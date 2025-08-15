@@ -2106,7 +2106,7 @@
             "Certificate public key"
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is Certificate private key. The private key is not included in the certificate; it is kept secret by the certificate holder."
+          "explanation": "Private keys are kept secret and never included in certificates."
         },
         {
           "question": "When an administrator wants to configure a USG series firewall through the console port, which of the following configurations should be made in the putty?",
@@ -2117,7 +2117,7 @@
             "19200 bps, 8 data bits, 1 stop bit, no parity check, and no flow control"
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is 9600 bps, 8 data bits, 1 stop bit, no parity check, and no flow control. This is the standard configuration for console access on USG firewalls."
+          "explanation": "USG firewalls default to 9600 bps, 8N1 (no parity/flow control) for console access."
         },
         {
           "question": "On a USG firewall, which of the following commands is used to view current session entries?",
@@ -2128,7 +2128,7 @@
             "display firewall fib session"
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is display firewall session table. This command displays the current session entries on the firewall."
+          "explanation": "display firewall session table shows active sessions."
         },
         {
           "question": "Which of the following values is the default security level of the Trust zone on a Huawei USG firewall?",
@@ -2139,7 +2139,7 @@
             "100"
           ],
           "correctAnswer": 2,
-          "explanation": "The default security level of the Trust zone on a Huawei USG firewall is 85. This level indicates a high level of trust for traffic originating from this zone. Refer to page 98 of Huawei training materials for more details."
+          "explanation": "Trust zone defaults to security level 85 (high trust)."
         },
         {
           "question": "Which of the following data filtering functions can prevent employees from disclosing their identity information to the Internet?",
@@ -2150,7 +2150,7 @@
             "Content filtering"
           ],
           "correctAnswer": 3,
-          "explanation": "The correct answer is content filtering. Refer to pg 135 of HCIA training material."
+          "explanation": "Content filtering scans for sensitive data (e.g., PII) in outbound traffic. pg 135 of HCIA training material."
         },
         {
           "question": "Which of the following statements is correct about firewall security zones?",
@@ -2161,7 +2161,7 @@
             "Different security zones can have the same security level."
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is different interfaces on a firewall can belong to the same security zone."
+          "explanation": "Multiple interfaces can be assigned to the same zone (e.g., Trust)."
         },
         {
           "question": "Which of the following steps is optional for configuring intrusion prevention?",
