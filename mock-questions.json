@@ -2172,7 +2172,7 @@
             "Referencing an IPS profile in a security policy"
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is Configuring signature exceptions."
+          "explanation": "Signature exceptions (whitelisting) are optional."
         },
         {
           "question": "Which of the following values is the default port number of the SSH protocol?",
@@ -2183,7 +2183,7 @@
             "23"
           ],
           "correctAnswer": 2,
-          "explanation": "The correct answer is 22."
+          "explanation": "SSH uses TCP port 22 by default."
         },
         {
           "question": "The digital certificate technology addresses the problem from the digital signature technology that the owner of a public key cannot be determined. Which of the following are types of digital certificates?",
@@ -2194,7 +2194,7 @@
             "Local device certificate"
           ],
           "correctAnswer": [0, 1, 2, 3],
-          "explanation": "The correct answers are ABCD."
+          "explanation": "All options are valid certificate types."
         },
         {
           "question": "Which of the following ports are used as the default authentication and accounting ports of the RADIUS protocol?",
@@ -2205,7 +2205,7 @@
             "1814"
           ],
           "correctAnswer": [1, 2],
-          "explanation": "The correct answer is B and C."
+          "explanation": "RADIUS uses UDP 1812 (authentication) and 1813 (accounting)."
         },
         {
           "question": "If the administrator has configured the Telnet service on the firewall but a user still cannot access the firewall remotely, which of the following are possible causes of the access failure?",
@@ -2216,7 +2216,7 @@
             "The number of online Telnet users reaches the upper limit."
           ],
           "correctAnswer": [0, 1, 3],
-          "explanation": "The correct answer is A, B, and D."
+          "explanation": "Network issues, wrong credentials, or session limits can block access."
         },
         {
           "question": "Which of the following methods can be used to implement the SSL VPN web proxy?",
@@ -2227,7 +2227,7 @@
             "Web rewriting"
           ],
           "correctAnswer": [0, 3],
-          "explanation": "The correct answer is web link and web rewriting."
+          "explanation": "Web proxy uses link rewriting or web rewriting for secure access."
         },
         {
           "question": "Which of the following are components of a PKI system?",
@@ -2238,7 +2238,7 @@
             "Certificate/CRL database"
           ],
           "correctAnswer": [0, 1, 2, 3],
-          "explanation": "The correct answer is A, B, C, and D."
+          "explanation": "PKI includes all these components for certificate lifecycle management."
         },
         {
           "question": "Which of the following security functions can be provided by the AH protocol in IPsec?",
