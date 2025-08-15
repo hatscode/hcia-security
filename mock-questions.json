@@ -2249,7 +2249,7 @@
             "Anti-replay"
           ],
           "correctAnswer": [0, 2, 3],
-          "explanation": "The correct answer is Data origin authentication, data integrity verification, and anti-replay."
+          "explanation": "AH provides authentication, integrity, and anti-replay but not encryption."
         },
         {
           "question": "Which of the following algorithms are symmetric encryption algorithms?",
@@ -2260,7 +2260,7 @@
             "SHA1"
           ],
           "correctAnswer": [0, 1],
-          "explanation": "The correct answer is DES and 3DES."
+          "explanation": "DES and 3DES are symmetric; MD5/SHA1 are hashing algorithms."
         },
         {
           "question": "Which of the following are common network topologies?",
@@ -2271,7 +2271,7 @@
             "Ring topology"
           ],
           "correctAnswer": [0, 1, 2, 3],
-          "explanation": "The correct answer is A."
+          "explanation": "All are standard network topologies."
         },
         {
           "question": "Which of the following statements are correct about the decapsulation of data packets in the TCP/IP protocol stack?",
@@ -2282,7 +2282,7 @@
             "After the transport layer (TCP) receives and parses data packets, transport layer information is removed, and the upper-layer protocol is obtained based on the parsing result."
           ],
           "correctAnswer": [0, 1, 2, 3],
-          "explanation": "The correct answer is A, B, C, and D."
+          "explanation": "All steps describe correct packet decapsulation in the TCP/IP stack."
         },
         {
           "question": "Which of the following VPNs are suitable for employees on business trips to access the enterprise intranet from the public network?",
@@ -2293,7 +2293,7 @@
             "SSL VPN"
           ],
           "correctAnswer": [0, 2, 3],
-          "explanation": "The correct answer is ACD. Refer to page 128 of HCIA security training material."
+          "explanation": "L2TP, L2TP/IPsec, and SSL VPN are remote-access solutions; GRE is site-to-site."
         },
         {
           "question": "Which of the following principles must be adhered to when you configure the security levels of the firewall security zones?",
