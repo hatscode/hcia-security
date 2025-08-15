@@ -2440,7 +2440,7 @@
             "False"
           ],
           "correctAnswer": 0,
-          "explanation": "The correct answer is True."
+          "explanation": "True. IPS blocks known exploits and malware."
         },
         {
           "question": "When the stateful inspection function is disabled, the firewall creates a session for subsequent packets.",
@@ -2448,8 +2448,8 @@
             "True",
             "False"
           ],
-          "correctAnswer": 0,
-          "explanation": "The correct answer is True."
+          "correctAnswer": 1,
+          "explanation": "False. Stateful inspection must be enabled for session tracking."
         },
         {
           "question": "If the IKE negotiation mode of the IPsec VPN is the main mode, the ID type must be an IP address.",
@@ -2458,7 +2458,7 @@
             "False"
           ],
           "correctAnswer": 0,
-          "explanation": "The correct answer is True."
+          "explanation": "True. Main mode supports non-IP IDs (e.g., FQDN).."
         },
         {
           "question": "With a large number of network users, large enterprises usually use a hierarchical structure to support network expansion and growing number of users.",
