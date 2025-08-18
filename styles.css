@@ -3017,8 +3017,9 @@ body {
     }
     
     .footer-nav {
-        flex-direction: column;
-        gap: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
         width: 100%;
     }
     
@@ -3030,6 +3031,7 @@ body {
     .footer-nav-section h4 {
         font-size: 0.8rem;
         margin-bottom: 0.75rem;
+        text-align: center;
     }
     
     .footer-nav-section ul {
@@ -3045,7 +3047,7 @@ body {
     }
     
     .footer-social {
-        min-width: 80px;
+        min-width: 70px;
         justify-content: center;
     }
     
