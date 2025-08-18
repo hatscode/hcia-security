@@ -715,6 +715,16 @@ class ExamApp {
         if (targetPage) {
             targetPage.classList.add('active');
         }
+        
+        // Handle footer visibility - hide during exam and results, show for all other pages
+        const footer = document.querySelector('.app-footer');
+        if (footer) {
+            if (pageId === 'question-page' || pageId === 'results-page') {
+                footer.style.display = 'none';
+            } else {
+                footer.style.display = 'block';
+            }
+        }
     }
 
     /**
@@ -768,6 +778,12 @@ class ExamApp {
             this.startTimer();
             this.displayQuestion();
             this.hideLoadingScreen();
+            
+            // Hide footer during exam for cleaner experience
+            const footer = document.querySelector('.app-footer');
+            if (footer) {
+                footer.style.display = 'none';
+            }
         }, 1000);
     }
 
@@ -1811,6 +1827,12 @@ class ExamApp {
         // Go back to home page
         this.showPage('home-page');
         
+        // Show footer again when returning to home
+        const footer = document.querySelector('.app-footer');
+        if (footer) {
+            footer.style.display = 'block';
+        }
+        
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -2456,5 +2478,112 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create and start the exam application
     window.examApp = new ExamApp();
     
+    // Initialize page navigation
+    initializePageNavigation();
+    
     console.log('Application ready for use!');
 });
+
+/**
+ * Initialize navigation between different pages
+ */
+function initializePageNavigation() {
+    // Get all page elements
+    const homePage = document.getElementById('home-page');
+    const aboutPage = document.getElementById('about-page');
+    const studyGuidePage = document.getElementById('study-guide-page');
+    
+    // Get navigation elements
+    const footerAboutLink = document.getElementById('footer-about-link');
+    const footerStudyGuideLink = document.getElementById('footer-study-guide-link');
+    const backToHomeAbout = document.getElementById('back-to-home-about');
+    const backToHomeGuide = document.getElementById('back-to-home-guide');
+    
+    /**
+     * Show a specific page and hide others
+     */
+    function showPage(targetPage) {
+        // Hide all pages
+        [homePage, aboutPage, studyGuidePage].forEach(page => {
+            if (page) {
+                page.classList.remove('active');
+            }
+        });
+        
+        // Show target page
+        if (targetPage) {
+            targetPage.classList.add('active');
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+    
+    // About page navigation
+    if (footerAboutLink) {
+        footerAboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(aboutPage);
+            // Update URL without page reload
+            history.pushState({ page: 'about' }, 'About - HCIA Security Practice', '#about');
+        });
+    }
+    
+    // Study Guide page navigation
+    if (footerStudyGuideLink) {
+        footerStudyGuideLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(studyGuidePage);
+            // Update URL without page reload
+            history.pushState({ page: 'study-guide' }, 'Study Guide - HCIA Security Practice', '#study-guide');
+        });
+    }
+    
+    // Back to home from About
+    if (backToHomeAbout) {
+        backToHomeAbout.addEventListener('click', () => {
+            showPage(homePage);
+            // Update URL without page reload
+            history.pushState({ page: 'home' }, 'HCIA Security Practice', '/');
+        });
+    }
+    
+    // Back to home from Study Guide
+    if (backToHomeGuide) {
+        backToHomeGuide.addEventListener('click', () => {
+            showPage(homePage);
+            // Update URL without page reload
+            history.pushState({ page: 'home' }, 'HCIA Security Practice', '/');
+        });
+    }
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', (e) => {
+        const state = e.state;
+        if (state && state.page) {
+            switch (state.page) {
+                case 'about':
+                    showPage(aboutPage);
+                    break;
+                case 'study-guide':
+                    showPage(studyGuidePage);
+                    break;
+                case 'home':
+                default:
+                    showPage(homePage);
+                    break;
+            }
+        } else {
+            showPage(homePage);
+        }
+    });
+    
+    // Handle initial page load based on URL hash
+    const hash = window.location.hash;
+    if (hash === '#about') {
+        showPage(aboutPage);
+    } else if (hash === '#study-guide') {
+        showPage(studyGuidePage);
+    } else {
+        showPage(homePage);
+    }
+}
