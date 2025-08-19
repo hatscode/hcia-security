@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Huawei Mock Exam - Practice Test</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Home Page -->
+    <div id="home-page" class="page active">
+        <div class="container">
+            <main class="main-content">
+                <div class="hero-section">
+                    <header class="modern-header">
+                        <div class="brand-container">
+                            <div class="brand-icon">
+                                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                    <path d="M9 12l2 2 4-4"/>
+                                </svg>
+                            </div>
+                            <div class="brand-content">
+                                <div class="brand-title">
+                                    <h1>
+                                        <span class="brand-certification">HCIA Security</span>
+                                    </h1>
+                                    <div class="brand-subtitle">Practice Exam Platform</div>
+                                </div>
+                                <div class="certification-badge">
+                                    <div class="badge-icon">🏆</div>
+                                    <span>HCIA Certified</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-decorations">
+                            <div class="decoration-dot"></div>
+                            <div class="decoration-dot"></div>
+                            <div class="decoration-dot"></div>
+                        </div>
+                    </header>
+                    
+                    <h2>Practice for Your Huawei Certification</h2>
+                    
+                    <div class="mock-selection">
+                        <h3>Select Mock Exam</h3>
+                        <div class="mock-options">
+                            <button class="mock-btn active" data-mock="1">Mock 1</button>
+                            <button class="mock-btn" data-mock="2">Mock 2</button>
+                            <button class="mock-btn" data-mock="3">Mock 3</button>
+                            <button class="mock-btn" data-mock="4">Mock 4</button>
+                            <button class="mock-btn" data-mock="5">Mock 5</button>
+                            <button class="mock-btn" data-mock="6">Mock 6</button>
+                        </div>
+                    </div>
+                    
+                    <div class="exam-info">
+                        <div class="info-item" data-type="questions">
+                            <span class="info-label">Questions:</span>
+                            <span class="info-value" id="question-count">60</span>
+                        </div>
+                        <div class="info-item" data-type="time">
+                            <span class="info-label">Time Limit:</span>
+                            <span class="info-value">1h 30min</span>
+                        </div>
+                        <div class="info-item" data-type="score">
+                            <span class="info-label">Passing Score:</span>
+                            <span class="info-value">70%</span>
+                        </div>
+                    </div>
+                    
+                    <button id="start-exam-btn" class="btn btn-primary" aria-label="Start the Huawei mock exam">
+                        Start Exam
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Question Page -->
+    <div id="question-page" class="page">
+        <div class="container">
+            <header class="exam-header">
+                <div class="exam-progress">
+                    <span id="question-counter">Question 1 of 15</span>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="timer">
+                    <span class="timer-label">Time Remaining:</span>
+                    <span id="timer-display" class="timer-value" aria-live="polite">05:00</span>
+                </div>
+            </header>
+            
+            <main class="question-content">
+                <div class="question-container">
+                    <h2 id="question-text" class="question-text">Question will appear here</h2>
+                    
+                    <div id="answer-options" class="answer-options" role="radiogroup" aria-labelledby="question-text">
+                        <!-- Answer options will be dynamically inserted here -->
+                    </div>
+                    
+                    <div class="question-navigation">
+                        <button id="stop-exam-btn" class="btn btn-warning" aria-label="Stop exam and see results">
+                            Stop Exam
+                        </button>
+                        <div class="nav-buttons">
+                            <button id="prev-question-btn" class="btn btn-secondary" disabled aria-label="Go to previous question">
+                                ← Previous
+                            </button>
+                            <button id="next-question-btn" class="btn btn-primary" disabled aria-label="Go to next question">
+                                Next →
+                            </button>
+                        </div>
+                        <button id="submit-exam-btn" class="btn btn-secondary" style="display: none;" aria-label="Submit exam">
+                            Submit Exam
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Results Page -->
+    <div id="results-page" class="page">
+        <div class="container">
+            <header class="results-header">
+                <div class="results-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    <span>Exam Complete</span>
+                </div>
+                <h1>Your Results</h1>
+                <p class="results-subtitle">HCIA Security Practice Exam</p>
+            </header>
+            
+            <main class="results-content">
+                <!-- Performance Overview -->
+                <div class="performance-overview">
+                    <div class="score-card primary">
+                        <div class="score-card-header">
+                            <h3>Overall Score</h3>
+                            <div class="score-trend">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <svg class="progress-ring" width="80" height="80">
+                                    <circle class="progress-ring-background" cx="40" cy="40" r="34" />
+                                    <circle id="progress-ring-foreground" class="progress-ring-foreground" cx="40" cy="40" r="34" />
+                                </svg>
+                                <div class="score-text">
+                                    <span id="score-percentage" class="score-number">0%</span>
+                                    <span class="score-label">Score</span>
+                                </div>
+                            </div>
+                            <div class="pass-status">
+                                <div id="pass-indicator" class="status-indicator">
+                                    <span class="status-icon">⚪</span>
+                                    <span id="pass-text" class="status-text">Evaluating...</span>
+                                </div>
+                                <p class="pass-requirement">Passing score: 70%</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card correct">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="20 6 9 17l-5-5"/>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="correct-answers" class="stat-value">0</span>
+                                <span class="stat-label">Correct</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card incorrect">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="incorrect-answers" class="stat-value">0</span>
+                                <span class="stat-label">Incorrect</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card total">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14,2 14,8 20,8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10,9 9,9 8,9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="total-questions" class="stat-value">15</span>
+                                <span class="stat-label">Total Questions</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card time">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <span id="time-taken" class="stat-value">--:--</span>
+                                <span class="stat-label">Time Taken</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="results-actions">
+                    <button id="view-answers-btn" class="btn btn-outline">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Review Answers
+                    </button>
+                    <button id="retake-exam-btn" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <polyline points="23 20 23 14 17 14"></polyline>
+                            <path d="20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                        </svg>
+                        Retake Exam
+                    </button>
+                    <button id="give-feedback-btn" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        Give Feedback
+                    </button>
+                </div>
+                
+                <!-- Detailed Review Section -->
+                <div id="detailed-answers" class="detailed-review" style="display: none;">
+                    <div class="review-header">
+                        <h3>Answer Review</h3>
+                        <p>Review your answers and explanations for each question</p>
+                    </div>
+                    <div id="answer-review-list" class="review-list">
+                        <!-- Detailed answers will be inserted here -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="feedback-modal" style="display: none;">
+        <div class="feedback-modal-backdrop"></div>
+        <div class="feedback-modal-container">
+            <div class="feedback-modal-content">
+                <div class="feedback-header">
+                    <div class="feedback-title">
+                        <h3>Share Your Feedback</h3>
+                        <p class="feedback-subtitle">Help us improve your experience</p>
+                    </div>
+                    <button id="close-feedback-btn" class="close-feedback-btn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="feedback-body">
+                    <form class="feedback-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="feedback-type">Category</label>
+                                <select id="feedback-type" class="form-input">
+                                    <option value="">Select category</option>
+                                    <option value="suggestion">Suggestion</option>
+                                    <option value="bug">Bug Report</option>
+                                    <option value="question">Question Issue</option>
+                                    <option value="feature">Feature Request</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1" class="star">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2" class="star">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3" class="star">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4" class="star">★</label>
+                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <label for="star5" class="star">★</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedback-message-text">Your Message</label>
+                            <textarea id="feedback-message-text" class="form-input" placeholder="Share your thoughts, suggestions, or report any issues..." rows="4"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedback-email">Email (optional)</label>
+                            <input type="email" id="feedback-email" class="form-input" placeholder="your.email@example.com">
+                            <small class="form-hint">We'll only use this to follow up on your feedback</small>
+                        </div>
+                        
+                        <div class="feedback-actions">
+                            <button type="button" id="cancel-feedback-btn" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" id="submit-feedback-btn" class="btn btn-primary">
+                                <span>Send Feedback</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer" role="contentinfo" aria-label="Site footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Main Footer Section -->
+                <div class="footer-main">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                <path d="M9 12l2 2 4-4"/>
+                            </svg>
+                            <span class="footer-brand-name">HCIA Security Practice</span>
+                        </div>
+                        <p class="footer-tagline">Free certification preparation platform</p>
+                    </div>
+
+                    <nav class="footer-nav" aria-label="Footer navigation">
+                        <div class="footer-nav-section">
+                            <h4>Quick Links</h4>
+                            <ul>
+                                <li><a href="#" class="footer-link">About</a></li>
+                                <li><a href="#" class="footer-link">Study Guide</a></li>
+                                <li><a href="#" class="footer-link">Resources</a></li>
+                                <li><button id="footer-feedback-btn" class="footer-link footer-btn">Feedback</button></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-nav-section">
+                            <h4>Connect</h4>
+                            <ul>
+                                <li>
+                                    <a href="https://github.com/stilla1ex" target="_blank" rel="noopener noreferrer" class="footer-link footer-social" aria-label="GitHub Profile">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                                        </svg>
+                                        GitHub
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://x.com/stilla1ex" target="_blank" rel="noopener noreferrer" class="footer-link footer-social" aria-label="X (Twitter) Profile">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                        </svg>
+                                        Twitter
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://discord.gg/YUyVjT2v" target="_blank" rel="noopener noreferrer" class="footer-link footer-social" aria-label="Discord Community">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                            <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0095 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1568 2.4189Z"/>
+                                        </svg>
+                                        Discord
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+
+                <!-- Footer Bottom -->
+                <div class="footer-bottom">
+                    <div class="footer-copyright">
+                        <p>&copy; 2025 Made by <span class="footer-creator">﹫1³✘↯</span> • HCIA Security Practice</p>
+                        <p class="footer-disclaimer">Unofficial platform • Huawei and HCIA are trademarks of Huawei Technologies Co., Ltd.</p>
+                    </div>
+                    <div class="footer-meta">
+                        <span class="footer-version">v2.1.0</span>
+                        <span class="footer-updated">Aug 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Stop Exam Modal -->
+    <div id="stop-exam-modal" class="stop-modal" style="display: none;">
+        <div class="stop-modal-backdrop"></div>
+        <div class="stop-modal-content">
+            <div class="stop-modal-header">
+                <h3>Stop Exam</h3>
+            </div>
+            <div class="stop-modal-body">
+                <p>Are you sure you want to stop the exam?</p>
+                <p class="stop-modal-warning">You will get results based on the questions you have answered so far.</p>
+            </div>
+            <div class="stop-modal-actions">
+                <button id="continue-exam-btn" class="btn btn-secondary">Continue</button>
+                <button id="exit-exam-btn" class="btn btn-danger">Exit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue Report Modal -->
+    <div id="issue-report-modal" class="issue-modal" style="display: none;">
+        <div class="issue-modal-backdrop"></div>
+        <div class="issue-modal-content">
+            <div class="issue-modal-header">
+                <h3>Report Issue</h3>
+                <button id="close-issue-btn" class="close-issue-btn">&times;</button>
+            </div>
+            <div class="issue-modal-body">
+                <p>Help us improve the HCIA Security practice exam by reporting any issues you encounter.</p>
+                
+                <div class="issue-form">
+                    <div class="form-group">
+                        <label for="issue-type">Issue Type:</label>
+                        <select id="issue-type" class="issue-select">
+                            <option value="bug">Bug/Error</option>
+                            <option value="question">Question Issue</option>
+                            <option value="ui">UI/Design Problem</option>
+                            <option value="performance">Performance Issue</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-severity">Severity:</label>
+                        <select id="issue-severity" class="issue-select">
+                            <option value="low">Low - Minor inconvenience</option>
+                            <option value="medium">Medium - Affects functionality</option>
+                            <option value="high">High - Blocks important features</option>
+                            <option value="critical">Critical - App unusable</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-title">Issue Title:</label>
+                        <input type="text" id="issue-title" placeholder="Brief description of the issue" maxlength="100">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-description">Detailed Description:</label>
+                        <textarea id="issue-description" placeholder="Please describe the issue in detail, including steps to reproduce..." rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-expected">Expected Behavior:</label>
+                        <textarea id="issue-expected" placeholder="What did you expect to happen?" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue-contact">Your Email (optional):</label>
+                        <input type="email" id="issue-contact" placeholder="your.email@example.com (for follow-up)">
+                    </div>
+                    
+                    <div class="issue-context">
+                        <h4>System Information</h4>
+                        <div class="context-info">
+                            <span><strong>Page:</strong> <span id="context-page">-</span></span>
+                            <span><strong>Browser:</strong> <span id="context-browser">-</span></span>
+                            <span><strong>Timestamp:</strong> <span id="context-timestamp">-</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="issue-actions">
+                        <button id="submit-issue-btn" class="btn btn-primary">Submit Issue Report</button>
+                        <button id="cancel-issue-btn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading your exam...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
