@@ -1,8 +1,8 @@
 /* Error Message Styles */
 .error-message {
-    background: #2d1b1b;
-    border: 1px solid #e53e3e;
-    color: #fbb6ce;
+    background: var(--color-error-bg);
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
     padding: 1rem;
     border-radius: 8px;
     margin: 1rem 0;
@@ -464,10 +464,10 @@ body {
 
 .mock-btn {
     padding: 0.6rem 1.2rem;
-    border: 2px solid #4a5568;
+    border: 2px solid var(--color-border-light);
     border-radius: 8px;
-    background: #1a202c;
-    color: #cbd5e0;
+    background: var(--color-bg-panel);
+    color: var(--color-text-secondary);
     font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
@@ -476,15 +476,15 @@ body {
 }
 
 .mock-btn:hover {
-    border-color: #4299e1;
-    background: #2d3748;
+    border-color: var(--color-accent);
+    background: var(--color-bg-card);
     transform: translateY(-1px);
 }
 
 .mock-btn.active {
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-    color: white;
-    border-color: #4299e1;
+    background: linear-gradient(135deg, var(--color-accent), #3182ce);
+    color: var(--color-text-primary);
+    border-color: var(--color-accent);
     box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
 }
 
@@ -494,7 +494,7 @@ body {
     gap: 1rem;
     margin-bottom: 1.5rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    background: linear-gradient(135deg, var(--color-bg-panel) 0%, var(--color-bg-card) 100%);
     border-radius: 16px;
     border: 1px solid #4a5568;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
@@ -515,7 +515,7 @@ body {
 .info-item {
     text-align: center;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-bg-card);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
@@ -523,7 +523,7 @@ body {
 }
 
 .info-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-bg-panel);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(66, 153, 225, 0.2);
 }
@@ -706,7 +706,7 @@ body {
 }
 
 .question-container {
-    background: rgba(45, 55, 72, 0.95);
+    background: var(--color-bg-panel);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 1rem;
@@ -727,13 +727,13 @@ body {
     font-weight: 500;
     margin-bottom: 0.8rem;
     line-height: 1.4;
-    color: #e2e8f0;
+    color: var(--color-text-primary);
     flex-shrink: 0;
     padding: 0.8rem;
-    background: #1a202c;
+    background: var(--color-bg-card);
     border-radius: 10px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    border: 1px solid #4a5568;
+    border: 1px solid var(--color-border-light);
 }
 
 .question-type {
@@ -773,8 +773,8 @@ body {
     align-items: center;
     padding: 0.7rem 1rem;
     margin-bottom: 0.6rem;
-    background: #1a202c;
-    border: 2px solid #4a5568;
+    background: var(--color-bg-card);
+    border: 2px solid var(--color-border-light);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -782,13 +782,13 @@ body {
 }
 
 .answer-option:hover {
-    background: #2d3748;
-    border-color: #718096;
+    background: var(--color-bg-panel);
+    border-color: var(--color-border);
 }
 
 .answer-option.selected {
-    background: #2a4365;
-    border-color: #4299e1;
+    background: var(--color-accent-active);
+    border-color: var(--color-accent);
 }
 
 .answer-option input[type="radio"] {
@@ -812,9 +812,9 @@ body {
 }
 
 .answer-option:has(input[type="checkbox"]).selected {
-    background: #2d4a3d;
-    border-color: #319795;
-    border-left-color: #319795;
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    border-left-color: var(--color-success);
 }
 
 .answer-option label {
@@ -852,8 +852,8 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: linear-gradient(135deg, #4299e1, #3182ce);
-    color: white;
+    background: linear-gradient(135deg, var(--color-accent), #3182ce);
+    color: var(--color-text-primary);
     padding: 0.4rem 0.8rem;
     border-radius: 16px;
     font-size: 0.85rem;
