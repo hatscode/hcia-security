@@ -19,6 +19,37 @@
 /* Reset and Base Styles */
 :root {
     --vh: 1vh;
+    /* Dark Theme Palette */
+    --color-bg-main: #0D1117;
+    --color-bg-panel: #161B22;
+    --color-bg-card: #161B22;
+    --color-text-primary: #F0F6FC;
+    --color-text-secondary: #8B949E;
+    --color-accent: #2563EB;
+    --color-accent-hover: #3973f7;
+    --color-accent-active: #1746a2;
+    --color-success: #22C55E;
+    --color-success-bg: rgba(34,197,94,0.15);
+    --color-error: #DC2626;
+    --color-error-bg: rgba(220,38,38,0.15);
+    --color-warning: #F59E0B;
+    --color-warning-bg: rgba(245,158,11,0.15);
+    --color-disabled: #2D333B;
+    --color-disabled-text: #6E7681;
+    --color-border: #21262D;
+    --color-border-light: #30363D;
+    --color-progress-bg: #21262D;
+    --color-progress-fill: #2563EB;
+    --color-input-bg: #161B22;
+    --color-input-border: #30363D;
+    --color-input-placeholder: #8B949E;
+    --color-footer-bg: #161B22;
+    --color-footer-border: #21262D;
+    --color-footer-text: #8B949E;
+    --color-footer-link: #2563EB;
+    --color-footer-link-hover: #3973f7;
+    --color-card-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    --color-panel-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
 
 * {
@@ -35,8 +66,8 @@
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    color: #e2e8f0;
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: var(--color-text-primary);
+    background: var(--color-bg-main);
     min-height: 100vh;
     /* Prevent text selection */
     -webkit-touch-callout: none;
@@ -58,6 +89,7 @@ body {
     max-width: 700px;
     margin: 0 auto;
     padding: 0 12px;
+    background: var(--color-bg-panel);
 }
 
 /* Page Management */
@@ -92,11 +124,9 @@ body {
 
 /* Modern Header Design */
 .modern-header {
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 100%);
+    background: var(--color-bg-card);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--color-border-light);
     border-radius: 14px;
     padding: 0.875rem 1.5rem;
     margin-bottom: 2rem;
@@ -387,15 +417,15 @@ body {
 }
 
 .hero-section {
-    background: rgba(45, 55, 72, 0.95);
+    background: var(--color-bg-card);
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 2rem;
     text-align: center;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--color-card-shadow);
     max-width: 700px;
     width: 100%;
-    border: 1px solid #4a5568;
+    border: 1px solid var(--color-border);
 }
 
 .hero-section h2 {
@@ -889,7 +919,7 @@ body {
 }
 
 .score-card {
-    background: linear-gradient(145deg, #2d3748 0%, #1a202c 100%);
+    background: var(--color-bg-card);
     border-radius: 16px;
     padding: 1.5rem;
     box-shadow: 
@@ -1020,6 +1050,12 @@ body {
     border: 1px solid rgba(229, 62, 62, 0.3);
 }
 
+.status-indicator.warning {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    border: 1px solid var(--color-warning);
+}
+
 .pass-requirement {
     color: #a0aec0;
     font-size: 0.7rem;
@@ -1034,13 +1070,13 @@ body {
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-bg-panel);
     border-radius: 12px;
     padding: 1rem;
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--color-border-light);
     transition: all 0.3s ease;
 }
 
@@ -2124,10 +2160,6 @@ body {
     }
     
     .score-number {
-        font-size: 1rem;
-    }
-    
-    .score-number {
         font-size: 2rem;
     }
     
@@ -2318,10 +2350,6 @@ body {
     
     .answer-option {
         padding: 0.6rem 0.9rem;
-    }
-    
-    .answer-option label {
-        font-size: 0.85rem;
     }
 }
 
@@ -2726,12 +2754,10 @@ body {
 
 /* Minimal Professional Footer Styles */
 .app-footer {
-    background: linear-gradient(135deg, 
-        rgba(26, 32, 44, 0.98) 0%, 
-        rgba(45, 55, 72, 0.98) 100%);
+    background: var(--color-footer-bg);
     backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(99, 179, 237, 0.15);
-    color: #e2e8f0;
+    border-top: 1px solid var(--color-footer-border);
+    color: var(--color-footer-text);
     margin-top: 2rem;
     position: relative;
 }
@@ -3907,33 +3933,6 @@ body {
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1rem;
-}
-
-.explanation-header {
-    color: #4299e1;
-    margin-bottom: 0.5rem;
-}
-
-.explanation-content {
-    color: #e2e8f0;
-    line-height: 1.6;
-}
-
-.study-recommendations {
-    background: rgba(128, 90, 213, 0.1);
-    border: 1px solid #805ad5;
-    border-radius: 8px;
-    padding: 1rem;
-}
-
-.recommendation-header {
-    color: #b794f6;
-    margin-bottom: 0.5rem;
-}
-
-.recommendation-content {
-    color: #e2e8f0;
-    line-height: 1.6;
 }
 
 /* Mobile Responsiveness for Enhanced Features */
