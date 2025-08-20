@@ -704,16 +704,26 @@ class ExamApp {
      */
     showPage(pageId) {
         console.log(`Showing page: ${pageId}`);
-        
+
         // Hide all pages
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
         });
-        
+
         // Show the requested page
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.classList.add('active');
+        }
+
+        // Hide footer on exam and results pages, show otherwise
+        const footer = document.querySelector('footer.app-footer');
+        if (footer) {
+            if (pageId === 'question-page' || pageId === 'results-page') {
+                footer.style.display = 'none';
+            } else {
+                footer.style.display = '';
+            }
         }
     }
 
