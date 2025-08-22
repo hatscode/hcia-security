@@ -705,7 +705,7 @@ body {
 }
 
 .question-container {
-    background: var(--color-bg-panel);
+    background: var(--color-bg-main);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 1rem;
