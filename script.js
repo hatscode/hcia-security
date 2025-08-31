@@ -1,14 +1,3 @@
-/**
- * Huawei Mock Exam JavaScript Application
- * This application handles the complete exam flow including:
- * - Question management and navigation
- * - Timer functionality
- * - Answer tracking and validation
- * - Results calculation and display
- * - User interface interactions
- * - Multiple mock exam selection
- * - Page refresh protection
- */
 
 // Application State Management
 class ExamApp {

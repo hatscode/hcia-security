@@ -3294,7 +3294,7 @@ body {
 }
 
 .stop-modal-content {
-    background: #2d3748;
+    background: var(--color-bg-main);
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     border: 1px solid #4a5568;
