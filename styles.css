@@ -1194,7 +1194,7 @@ body {
 .detailed-review {
     width: 100%;
     max-width: 1600px;
-    background: linear-gradient(145deg, #1a202c 0%, #0D1117 100%);
+    background: var(--color-bg-main);
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
