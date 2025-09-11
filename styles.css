@@ -636,7 +636,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    background: rgba(45, 55, 72, 0.95);
+    background: var(--color-bg-main);
     backdrop-filter: blur(10px);
     border-radius: 8px;
     margin: 0.5rem 0;
