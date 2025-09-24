@@ -866,7 +866,7 @@
             "Local certificate",
             "Local device certificate"
           ],
-          "correctAnswer": 0,
+          "correctAnswer": [0, 1, 2, 3],
           "explanation": "The correct answer is ABCD."
         },
         {
