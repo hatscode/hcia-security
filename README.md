@@ -3,7 +3,7 @@
 A comprehensive web-based practice platform for Huawei Certified ICT Associate - Security certification preparation. This application provides an interactive testing environment with realistic exam conditions and detailed performance analytics.
 
 ## Features
-
+root㉿kali
 ### User Interface
 - Responsive design optimized for desktop, tablet, and mobile devices
 - Accessibility features including keyboard navigation and screen reader support
